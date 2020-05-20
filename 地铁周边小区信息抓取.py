@@ -29,20 +29,26 @@ def getInfo(i):
     r = requests.get(url)
         
     soup = BeautifulSoup(r.text, "html5lib")
-
     list1 = soup.html.body.find_all(class_="clear xiaoquListItem")
+
+    infoList = []
+    
     for child in list1:
-        dict = {}
-        dict['name'] = child.find(class_="info").find(class_="title").a.text.strip() #小区名字
-        dict['allSell'] = child.find(class_="info").find(class_="houseInfo").find_all("a")[0].text.strip()#成交套数
-        dict['lease'] = child.find(class_="info").find(class_="houseInfo").find_all("a")[1].text.strip() #出租套数
-        dict['area'] = child.find(class_="info").find(class_="positionInfo").find_all("a")[0].text.strip() #行政区域
-        dict['detailArea'] = child.find(class_="info").find(class_="positionInfo").find_all("a")[1].text.strip() #详细区域
-        dict['buildYear'] = child.find(class_="info").find(class_="positionInfo").contents[6].replace('\n', '').replace('\r', '').strip()[2:] #建成年份 未正常工作
-        dict['subway'] = child.find(class_="info").find(class_="tagList").text.strip().replace("\n", "") #近地铁情况      
-        dict['price'] = child.find(class_="xiaoquListItemRight").find(class_="totalPrice").span.text.strip() #小区均价
-        dict['nowSell'] = child.find(class_="xiaoquListItemRight").find(class_="xiaoquListItemSellCount").a.span.text.strip() #小区在售套数
-        print(dict)
-        
+        infoDict = {}
+        infoDict['name'] = child.find(class_="info").find(class_="title").a.text.strip() #小区名字
+        infoDict['allSell'] = child.find(class_="info").find(class_="houseInfo").find_all("a")[0].text.strip()#成交套数
+        infoDict['lease'] = child.find(class_="info").find(class_="houseInfo").find_all("a")[1].text.strip() #出租套数
+        infoDict['area'] = child.find(class_="info").find(class_="positionInfo").find_all("a")[0].text.strip() #行政区域
+        infoDict['detailArea'] = child.find(class_="info").find(class_="positionInfo").find_all("a")[1].text.strip() #详细区域
+        infoDict['buildYear'] = child.find(class_="info").find(class_="positionInfo").contents[6].replace('\n', '').replace('\r', '').strip()[2:] #建成年份 未正常工作
+        infoDict['subway'] = child.find(class_="info").find(class_="tagList").text.strip().replace("\n", "") #近地铁情况      
+        infoDict['price'] = child.find(class_="xiaoquListItemRight").find(class_="totalPrice").span.text.strip() #小区均价
+        infoDict['nowSell'] = child.find(class_="xiaoquListItemRight").find(class_="xiaoquListItemSellCount").a.span.text.strip() #小区在售套数
+        infoList.append(infoDict)
+    jstr = json.dumps(infoList, indent=2,sort_keys=True, ensure_ascii=False)
+
+    with open(r"小区信息.json", "w", encoding='utf8') as f:
+        f.write(jstr)
+
 #print (soup.html.body.find_all(class_="leftContent"))
 getPage()
