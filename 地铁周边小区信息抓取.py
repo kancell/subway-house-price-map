@@ -47,7 +47,7 @@ def getInfo(i):
         infoList.append(infoDict)
     jstr = json.dumps(infoList, indent=2,sort_keys=True, ensure_ascii=False)
 
-    with open(r"小区信息.json", "w", encoding='utf8') as f:
+    with open(r"小区列表与简要信息.json", "w", encoding='utf8') as f:
         f.write(jstr)
 
 #print (soup.html.body.find_all(class_="leftContent"))
