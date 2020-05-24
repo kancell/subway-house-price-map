@@ -46,8 +46,8 @@ def getInfo(i):
         infoDict['nowSell'] = child.find(class_="xiaoquListItemRight").find(class_="xiaoquListItemSellCount").a.span.text.strip() #小区在售套数
         infoList.append(infoDict)
     jstr = json.dumps(infoList, indent=2,sort_keys=True, ensure_ascii=False)
-
-    with open(r"小区列表与简要信息.json", "w", encoding='utf8') as f:
+    saveUrl = "./小区名称ID对应表/" + "小区列表与简要信息"  + ".json"
+    with open(saveUrl, "w", encoding='utf8') as f:
         f.write(jstr)
 
 #print (soup.html.body.find_all(class_="leftContent"))

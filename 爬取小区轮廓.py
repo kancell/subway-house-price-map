@@ -8,7 +8,7 @@ import re
 import json
 
 def loadJson():
-    with open("小区信息.json",'r',encoding='utf8') as loadInfo:
+    with open("./小区名称ID对应表/小区列表与简要信息.json",'r',encoding='utf8') as loadInfo:
         info  = json.load(loadInfo)
         return info
 
