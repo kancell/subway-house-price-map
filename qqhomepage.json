@@ -1,0 +1,56 @@
+[
+    {
+        "domain": ".amap.com",
+        "expiry": 1605924772,
+        "httpOnly": false,
+        "name": "l",
+        "path": "/",
+        "secure": false,
+        "value": "eBPzRaDPQe8SNiMyBOfNlurza77OSCOA_uPzaNbGiOCPOufp5meAWZAM0cT9C3GGh6rBR30DY6H_BeYBqQAonxvtJmUCETDmn"
+    },
+    {
+        "domain": ".amap.com",
+        "expiry": 1605924772,
+        "httpOnly": false,
+        "name": "isg",
+        "path": "/",
+        "secure": false,
+        "value": "BGFhXgqKm_tGljePGkLSjbtLey17DtUAsV8S4sM2XWjHKoH8C17l0I9oiFes5W04"
+    },
+    {
+        "domain": ".amap.com",
+        "expiry": 2221092772,
+        "httpOnly": false,
+        "name": "cna",
+        "path": "/",
+        "secure": false,
+        "value": "oxdSF2X9qn0CAXE5tIA74u4+"
+    },
+    {
+        "domain": "www.amap.com",
+        "expiry": 1606097572,
+        "httpOnly": false,
+        "name": "CNZZDATA1255626299",
+        "path": "/",
+        "secure": false,
+        "value": "1857446303-1590371182-%7C1590371182"
+    },
+    {
+        "domain": ".amap.com",
+        "expiry": 1606097571,
+        "httpOnly": false,
+        "name": "UM_distinctid",
+        "path": "/",
+        "secure": false,
+        "value": "172499aa6fa2d7-0094b587f70c0c-19103174-75300-172499aa6fb489"
+    },
+    {
+        "domain": ".amap.com",
+        "expiry": 1592964769.331544,
+        "httpOnly": false,
+        "name": "guid",
+        "path": "/",
+        "secure": false,
+        "value": "2b0e-1ea8-9e9d-b45f"
+    }
+]
