@@ -15,5 +15,6 @@ npm run serve
 npm run build
 ```
 
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+### 接下来需要处理的
+- 高德地图反爬处理
+- 数据存储位置由json改为mongodb数据库

@@ -5,22 +5,30 @@ from selenium.webdriver import ChromeOptions
 import json
 from selenium.webdriver import ActionChains
 import time
-
+import random
 opt = webdriver.ChromeOptions()
 opt.add_experimental_option('excludeSwitches', ['enable-automation'])
 opt.add_argument('--log-level=3')
 #opt.set_headless() #使用chrome的headless模式以减少资源消耗
 driver = webdriver.Chrome(options=opt)
 
-url = "https://www.amap.com/place/B001B0IO3B"
-driver.get(url)
-driver.switch_to_frame("sufei-dialog-content")
+
 
 def dargBlock():
-    #"nc_1_n1t" 滑块框
-    #"nc_1_n1z" 可点击拖拽滑块
+    
+    url = "https://www.amap.com/place/B001B0IO3B"
+    driver.get(url)
+    driver.switch_to_frame("sufei-dialog-content")
     dargBlock = driver.find_element_by_xpath('//*[@id="nc_1_n1z"]')
     move_to_gap(dargBlock, get_track(340))
+
+    l = driver.find_elements_by_xpath("//a[@href='javascript:noCaptcha.reset(1)']")
+    while(len(l) != 0):
+        l[0].click()
+        dargBlock = driver.find_element_by_xpath('//*[@id="nc_1_n1z"]')
+        move_to_gap(dargBlock, get_track(340))
+        l = driver.find_elements_by_xpath("//a[@href='javascript:noCaptcha.reset(1)']")
+    
 
 def move_to_gap(slider,tracks):     # slider是要移动的滑块,tracks是要传入的移动轨迹
     ActionChains(driver).click_and_hold(slider).perform()
@@ -30,16 +38,20 @@ def move_to_gap(slider,tracks):     # slider是要移动的滑块,tracks是要�
     ActionChains(driver).release().perform()
 
 def get_track(distance):      # distance为传入的总距离
+    rand1 = random.uniform(0.7,1.1)
+    
     # 移动轨迹
     track=[]
     # 当前位移
     current=0
     # 减速阈值
-    mid=distance*4/5
+    mid=distance*4/5 * rand1
     # 计算间隔
-    t=0.2
+    t=0.2 * rand1
     # 初速度
-    v=1
+    v=1 *rand1
+
+    
 
     while current<distance:
         if current<mid:
@@ -59,7 +71,6 @@ def get_track(distance):      # distance为传入的总距离
         track.append(round(move))
     return track
     
-dargBlock()
 
 def getCookie():
     cookies = driver.get_cookies() # 获取浏览器cookies
@@ -67,6 +78,7 @@ def getCookie():
     for item in cookies:
         info = item['name'] + ":" + item['value']
         cookieDict.append(info)
+    print(cookieDict)
 
 
 def getShape():
@@ -88,8 +100,11 @@ def getShape():
     }
     url = "https://www.amap.com/detail/get/detail"
     r = requests.get(url, headers = header,verify=False,params=data).json()
-    print(r)
 
+    if ('data' in r):
+        getCookie()
+        print(r["data"]["spec"]["mining_shape"]["shape"])
+    else:
+        dargBlock()
 
-#with open('qqhomepage.json', 'w') as f:
-#    f.write(jsonCookies)
+getShape()
