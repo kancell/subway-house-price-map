@@ -1,4 +1,5 @@
 import requests
+requests.packages.urllib3.disable_warnings()
 from selenium import webdriver
 from selenium.webdriver import Chrome
 from selenium.webdriver import ChromeOptions
@@ -12,23 +13,56 @@ opt.add_argument('--log-level=3')
 #opt.set_headless() #使用chrome的headless模式以减少资源消耗
 driver = webdriver.Chrome(options=opt)
 
+header = {
+    "Accept": "*/*",
+    "Accept-Encoding": "gzip, deflate, br",
+    "Accept-Language": "zh-CN,zh;q=0.9",
+    "amapuuid": "b8c17e6b-0ba1-4b80-bad2-bb8fa4a3ab68",
+    "Connection": "keep-alive",
+    "Host": "www.amap.com",
+    "Referer": "https://www.amap.com",
+    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/72.0.3626.81 Safari/537.36 SE 2.X MetaSr 1.0",
+    "x-csrf-token": "null",
+    "X-Requested-With": "XMLHttpRequest"
+}
+
+gaodeCookie = {}
+# 获取cookie中的name和value,转化成requests可以使用的形式
 
 
-def dargBlock():
-    
-    url = "https://www.amap.com/place/B001B0IO3B"
+def dargBlock(id):
+    url = "https://www.amap.com/place/" + id
     driver.get(url)
-    driver.switch_to_frame("sufei-dialog-content")
-    dargBlock = driver.find_element_by_xpath('//*[@id="nc_1_n1z"]')
-    move_to_gap(dargBlock, get_track(340))
+    time.sleep(12)
 
-    l = driver.find_elements_by_xpath("//a[@href='javascript:noCaptcha.reset(1)']")
-    while(len(l) != 0):
-        l[0].click()
+   """
+    verify1 = driver.find_elements_by_xpath('//*[@class="sufei-dialog-content"]')
+    if (len(verify1) != 0):
+        driver.switch_to_frame("sufei-dialog-content")
+        print(driver.find_element_by_class_name('nc-lang-cnt').text)
+        verf = driver.find_element_by_class_name('nc-lang-cnt').text == '验证通过'
+        while (verf == False):   
+            verf = driver.find_element_by_class_name('nc-lang-cnt').text == '验证通过'    
+            time.sleep(1)
+
+    
+    verify1 = driver.find_elements_by_xpath('//*[@class="sufei-dialog-content"]')
+    
+    if (len(verify1) != 0):
+        driver.switch_to_frame("sufei-dialog-content")
         dargBlock = driver.find_element_by_xpath('//*[@id="nc_1_n1z"]')
         move_to_gap(dargBlock, get_track(340))
-        l = driver.find_elements_by_xpath("//a[@href='javascript:noCaptcha.reset(1)']")
-    
+        time.sleep(1)
+        verify = driver.find_elements_by_xpath("//a[@href='javascript:noCaptcha.reset(1)']")
+        while(len(verify) != 0):
+            verify[0].click()
+            dargBlock = driver.find_element_by_xpath('//*[@id="nc_1_n1z"]')
+            move_to_gap(dargBlock, get_track(335))
+            time.sleep(1)
+            verify = driver.find_elements_by_xpath("//a[@href='javascript:noCaptcha.reset(1)']")
+    """
+
+    print('完成验证')
 
 def move_to_gap(slider,tracks):     # slider是要移动的滑块,tracks是要传入的移动轨迹
     ActionChains(driver).click_and_hold(slider).perform()
@@ -38,8 +72,7 @@ def move_to_gap(slider,tracks):     # slider是要移动的滑块,tracks是要�
     ActionChains(driver).release().perform()
 
 def get_track(distance):      # distance为传入的总距离
-    rand1 = random.uniform(0.7,1.1)
-    
+    rand1 = random.uniform(0.7,1.0)  
     # 移动轨迹
     track=[]
     # 当前位移
@@ -49,10 +82,7 @@ def get_track(distance):      # distance为传入的总距离
     # 计算间隔
     t=0.2 * rand1
     # 初速度
-    v=1 *rand1
-
-    
-
+    v=1 * rand1  
     while current<distance:
         if current<mid:
             # 加速度为2
@@ -73,38 +103,26 @@ def get_track(distance):      # distance为传入的总距离
     
 
 def getCookie():
-    cookies = driver.get_cookies() # 获取浏览器cookies
-    cookieDict = []
-    for item in cookies:
-        info = item['name'] + ":" + item['value']
-        cookieDict.append(info)
-    print(cookieDict)
+    cookies = driver.get_cookies()
+    driver.close()
+    return cookies
 
-
-def getShape():
-    header = {
-        "Accept": "*/*",
-        "Accept-Encoding": "gzip, deflate, br",
-        "Accept-Language": "zh-CN,zh;q=0.9",
-        "amapuuid": "c92be022-7609-484b-9692-5f9254d78cb2",
-        "Connection": "keep-alive",
-        "Cookie": "cna=tDiXFloW2RICAd3oLTaJ7Jqt; UM_distinctid=172094915761b1-0007eb1b7e65-c7d6957-1fa400-172094915771cf; passport_login=NDI3NjMyNjMxLGFtYXBBalBKUkE1MEcsNmI2eGdxazJkZXU0cGkzZjNxd3hqNnF3M2RhcXY2eHYsMTU4OTI5NDkwNyxZV1JtWmpNek1XWTRaVE5pWWpRNVpXRTJZMll5TlRnd1l6Tm1aalJqWmpBPQ%3D%3D; dev_help=SIcdWg%2FpX3uhMT34PIBOKjdjOGM4MzIyZDIzMGM2MTJkMWU5NWZhYjA1NWZhYmM0ZmRjNTA0NWEyMTYyOGI2N2RmN2Q4NmEwMDIzNmEyNjX5l9ZDgBR71%2FrcU2BHHQs43%2BtpuvZvsZfdZc7rY4Wjjy8Yw1onDQd7eIrT80qx7yzoZuSNwxwGC0aVVvXUSQwpkUQUx1cUmhvl5JV79GhnUgdYiRL3TeVb4o4Bdspy6Kg%3D; _uab_collina=158998832822468132723203; CNZZDATA1255626299=730330766-1589988259-https%253A%252F%252Fwww.baidu.com%252F%7C1590319756; guid=eead-c8f5-4cf0-3554; x5sec=7b22617365727665723b32223a226661313136323261326162363338396438383430323063303931306237326239434b2f6a71665946454b374b36397233304d32764d513d3d227d; l=eB_QCqogQlmehfuvBO5CFurza779qBAhCkPzaNbMiInca66l3pacaNQD_N0H4dtjgtf0fetrs9cQBREX7qzU-A_euqhzS8Xtp2p9-; isg=BImJwAAAM_ImyM92KdqO0neHlrXj1n0IkV5Lqyv4TXCvcqyEcyUT2aPstNZEMRVA",
-        "Host": "www.amap.com",
-        "Referer": "https://www.amap.com/place/B001B0BCHS",
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/72.0.3626.81 Safari/537.36 SE 2.X MetaSr 1.0",
-        "x-csrf-token": "null",
-        "X-Requested-With": "XMLHttpRequest"
-    }
-    data = {
-        "id": "B001B0IZEG"
-    }
+def getShape(id):
+    print("开始抓取")
+    data = {"id": id}
     url = "https://www.amap.com/detail/get/detail"
-    r = requests.get(url, headers = header,verify=False,params=data).json()
+    r = requests.get(url, headers = header, cookies=gaodeCookie, params=data).json()
 
-    if ('data' in r):
-        getCookie()
+    if ('data' in r):   
+        print('利用gaodeCookie抓取成功')
         print(r["data"]["spec"]["mining_shape"]["shape"])
-    else:
-        dargBlock()
+    else:      
+        print('抓取失败，开始使用headless验证，获取gaodeCookie')
+        dargBlock(id)
+        for cookie in getCookie():
+            gaodeCookie[cookie['name']] = cookie['value']
+        print(requests.get(url, headers=header, cookies=gaodeCookie, params=data).json())
 
-getShape()
+getShape("B001B0IZEG")
+getShape("B001B0IZEH")
+getShape("B0FFGZB2SK")
