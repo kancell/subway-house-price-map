@@ -8,18 +8,26 @@ from selenium.webdriver import ActionChains
 import time
 import random
 opt = webdriver.ChromeOptions()
-opt.add_experimental_option('excludeSwitches', ['enable-automation'])
-opt.add_argument('--log-level=3')
+opt.add_experimental_option('excludeSwitches', ['enable-automation']) #较早版本的chrome跳过window.navigator.webdriver检测
+opt.add_experimental_option('useAutomationExtension', False) #较早版本的chrome跳过window.navigator.webdriver检测
+opt.add_argument('--log-level=3') #消除控制台报错
+#opt.add_argument('blink-settings=imagesEnabled=false') #浏览器无图模式
 #opt.set_headless() #使用chrome的headless模式以减少资源消耗
 driver = webdriver.Chrome(options=opt)
-
+driver.execute_cdp_cmd("Page.addScriptToEvaluateOnNewDocument", {
+  "source": """
+    Object.defineProperty(navigator, 'webdriver', {
+      get: () => undefined
+    })
+  """
+}) #新版chrome跳过window.navigator.webdriver检测
 header = {
     "Accept": "*/*",
     "Accept-Encoding": "gzip, deflate, br",
     "Accept-Language": "zh-CN,zh;q=0.9",
     "amapuuid": "b8c17e6b-0ba1-4b80-bad2-bb8fa4a3ab68",
     "Connection": "keep-alive",
-    "Host": "www.amap.com",
+    "Host": "www.amap.com", 
     "Referer": "https://www.amap.com",
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/72.0.3626.81 Safari/537.36 SE 2.X MetaSr 1.0",
     "x-csrf-token": "null",
@@ -33,19 +41,40 @@ gaodeCookie = {}
 def dargBlock(id):
     url = "https://www.amap.com/place/" + id
     driver.get(url)
-    time.sleep(12)
+    """ 
+    if (driver.find_element_by_xpath('//*[@class="sufei-dialog-content"]').is_displayed()):
+        driver.switch_to_frame("sufei-dialog-content")
+        dargBlock = driver.find_element_by_xpath('//*[@id="nc_1_n1z"]')
+        move_to_gap(dargBlock, get_track(340))
+        time.sleep(1)
+        verify = driver.find_elements_by_xpath("//a[@href='javascript:noCaptcha.reset(1)']")
+        while(len(verify) != 0):
+            verify[0].click()
+            dargBlock = driver.find_element_by_xpath('//*[@id="nc_1_n1z"]')
+            move_to_gap(dargBlock, get_track(340))
+            time.sleep(1)
+            verify = driver.find_elements_by_xpath("//a[@href='javascript:noCaptcha.reset(1)']")
+    """ 
+    time.sleep(10) #学会回调之后优化
+""" 
+def dargBlock(id):    
+    url = "https://www.amap.com/place/" + id
+    driver.get(url)
+    time.sleep(10)
 
-   """
-    verify1 = driver.find_elements_by_xpath('//*[@class="sufei-dialog-content"]')
-    if (len(verify1) != 0):
+    if (driver.find_element_by_xpath('//*[@class="sufei-dialog-content"]').is_displayed()):
         driver.switch_to_frame("sufei-dialog-content")
         print(driver.find_element_by_class_name('nc-lang-cnt').text)
-        verf = driver.find_element_by_class_name('nc-lang-cnt').text == '验证通过'
-        while (verf == False):   
+        verf = (driver.find_element_by_class_name('nc-lang-cnt').text == '验证通过')
+        while (verf == False):  
+            print("d等待") 
             verf = driver.find_element_by_class_name('nc-lang-cnt').text == '验证通过'    
-            time.sleep(1)
 
-    
+
+    verify1 = driver.find_elements_by_xpath('//*[@class="sufei-dialog-content"]')
+
+
+
     verify1 = driver.find_elements_by_xpath('//*[@class="sufei-dialog-content"]')
     
     if (len(verify1) != 0):
@@ -60,9 +89,7 @@ def dargBlock(id):
             move_to_gap(dargBlock, get_track(335))
             time.sleep(1)
             verify = driver.find_elements_by_xpath("//a[@href='javascript:noCaptcha.reset(1)']")
-    """
-
-    print('完成验证')
+"""    
 
 def move_to_gap(slider,tracks):     # slider是要移动的滑块,tracks是要传入的移动轨迹
     ActionChains(driver).click_and_hold(slider).perform()
@@ -99,8 +126,9 @@ def get_track(distance):      # distance为传入的总距离
         current+=move
         # 加入轨迹
         track.append(round(move))
+        print(track)
     return track
-    
+
 
 def getCookie():
     cookies = driver.get_cookies()
@@ -115,12 +143,14 @@ def getShape(id):
 
     if ('data' in r):   
         print('利用gaodeCookie抓取成功')
-        print(r["data"]["spec"]["mining_shape"]["shape"])
+        print(r)
     else:      
         print('抓取失败，开始使用headless验证，获取gaodeCookie')
         dargBlock(id)
+
         for cookie in getCookie():
             gaodeCookie[cookie['name']] = cookie['value']
+        time.sleep(1)
         print(requests.get(url, headers=header, cookies=gaodeCookie, params=data).json())
 
 getShape("B001B0IZEG")
