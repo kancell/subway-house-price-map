@@ -1,0 +1,1317 @@
+[
+    {
+        "allSell": "90天成交9套",
+        "area": "洪山",
+        "buildYear": "2004年建成",
+        "detailArea": "团结大道",
+        "gaodeInfo": [
+            {
+                "address": "洪山团结大道地铁4号线仁和路",
+                "adname": "洪山区",
+                "cityname": "武汉市",
+                "id": "B0FFF5QPFU",
+                "location": "114.383663,30.604677",
+                "name": "金地自在城",
+                "pname": "湖北省",
+                "type": "商务住宅;住宅区;住宅小区"
+            },
+            {
+                "address": "武丰路南150米",
+                "adname": "洪山区",
+                "cityname": "武汉市",
+                "id": "B0FFJRX5RU",
+                "location": "114.384197,30.605128",
+                "name": "金地自在城K2",
+                "pname": "湖北省",
+                "type": "商务住宅;住宅区;住宅小区"
+            }
+        ],
+        "lease": "237套正在出租",
+        "name": "金地自在城",
+        "nowSell": "127",
+        "price": "19449",
+        "subway": "近地铁4号线园林路站"
+    },
+    {
+        "allSell": "90天成交5套",
+        "area": "黄陂",
+        "buildYear": "2007年建成",
+        "detailArea": "盘龙城",
+        "gaodeInfo": [],
+        "lease": "26套正在出租",
+        "name": "珩生领袖城",
+        "nowSell": "125",
+        "price": "11010",
+        "subway": "近地铁2号线巨龙大道站"
+    },
+    {
+        "allSell": "90天成交2套",
+        "area": "江岸",
+        "buildYear": "2015年建成",
+        "detailArea": "塔子湖",
+        "gaodeInfo": [
+            {
+                "address": "后湖大道与中一路交汇处(塔子湖体育中心正对面)",
+                "adname": "江岸区",
+                "cityname": "武汉市",
+                "id": "B0FFF0DL8N",
+                "location": "114.283617,30.63788",
+                "name": "国际百纳",
+                "pname": "湖北省",
+                "type": "商务住宅;住宅区;住宅小区"
+            }
+        ],
+        "lease": "28套正在出租",
+        "name": "国际百纳",
+        "nowSell": "39",
+        "price": "19115",
+        "subway": "近地铁8号线中一路站"
+    },
+    {
+        "allSell": "90天成交7套",
+        "area": "江岸",
+        "buildYear": "2014年建成",
+        "detailArea": "塔子湖",
+        "gaodeInfo": [],
+        "lease": "9套正在出租",
+        "name": "融创公园壹号三期",
+        "nowSell": "39",
+        "price": "19149",
+        "subway": "近地铁8号线中一路站"
+    },
+    {
+        "allSell": "90天成交8套",
+        "area": "江汉",
+        "buildYear": "2012年建成",
+        "detailArea": "长港路",
+        "gaodeInfo": [
+            {
+                "address": "常青路126号",
+                "adname": "江汉区",
+                "cityname": "武汉市",
+                "id": "B001B1C0QS",
+                "location": "114.247226,30.618518",
+                "name": "福星惠誉·福星城南区",
+                "pname": "湖北省",
+                "type": "商务住宅;住宅区;住宅小区"
+            }
+        ],
+        "lease": "83套正在出租",
+        "name": "福星城南区",
+        "nowSell": "112",
+        "price": "18589",
+        "subway": "近地铁2号线长港路站"
+    },
+    {
+        "allSell": "90天成交13套",
+        "area": "东湖高新",
+        "buildYear": "2011年建成",
+        "detailArea": "光谷东",
+        "gaodeInfo": [],
+        "lease": "90套正在出租",
+        "name": "朗诗里程",
+        "nowSell": "101",
+        "price": "17963",
+        "subway": "近地铁11号线光谷六路站"
+    },
+    {
+        "allSell": "90天成交8套",
+        "area": "江岸",
+        "buildYear": "2012年建成",
+        "detailArea": "塔子湖",
+        "gaodeInfo": [],
+        "lease": "48套正在出租",
+        "name": "百步亭金桥汇II期",
+        "nowSell": "107",
+        "price": "18351",
+        "subway": "近地铁3号线市民之家站"
+    },
+    {
+        "allSell": "90天成交5套",
+        "area": "东湖高新",
+        "buildYear": "2010年建成",
+        "detailArea": "光谷东",
+        "gaodeInfo": [
+            {
+                "address": "光谷一路和南湖大道交汇处",
+                "adname": "江夏区",
+                "cityname": "武汉市",
+                "id": "B0FFG6XTIF",
+                "location": "114.438517,30.473654",
+                "name": "城市之光(光谷一路)",
+                "pname": "湖北省",
+                "type": "商务住宅;住宅区;住宅小区"
+            },
+            {
+                "address": "北湖西路97号",
+                "adname": "江汉区",
+                "cityname": "武汉市",
+                "id": "B001B08B1J",
+                "location": "114.26641,30.604083",
+                "name": "城市之光(马场角横路)",
+                "pname": "湖北省",
+                "type": "商务住宅;住宅区;住宅小区"
+            }
+        ],
+        "lease": "13套正在出租",
+        "name": "城市之光",
+        "nowSell": "65",
+        "price": "17430",
+        "subway": "近地铁2号线黄龙山路站"
+    },
+    {
+        "allSell": "90天成交4套",
+        "area": "江岸",
+        "buildYear": "2010年建成",
+        "detailArea": "塔子湖",
+        "gaodeInfo": [
+            {
+                "address": [],
+                "adname": "江岸区",
+                "cityname": "武汉市",
+                "id": "B0FFHFDDZP",
+                "location": "114.28513,30.653027",
+                "name": "光明上海公馆",
+                "pname": "湖北省",
+                "type": "商务住宅;住宅区;住宅小区"
+            }
+        ],
+        "lease": "23套正在出租",
+        "name": "光明上海公馆",
+        "nowSell": "45",
+        "price": "19283",
+        "subway": "近地铁8号线塔子湖站"
+    },
+    {
+        "allSell": "90天成交5套",
+        "area": "黄陂",
+        "buildYear": "2006年建成",
+        "detailArea": "盘龙城",
+        "gaodeInfo": [
+            {
+                "address": "巨龙大道159号",
+                "adname": "黄陂区",
+                "cityname": "武汉市",
+                "id": "B001B0JLHS",
+                "location": "114.255997,30.708505",
+                "name": "歌林花园",
+                "pname": "湖北省",
+                "type": "商务住宅;住宅区;住宅小区"
+            }
+        ],
+        "lease": "43套正在出租",
+        "name": "歌林花园",
+        "nowSell": "88",
+        "price": "12304",
+        "subway": "近地铁2号线巨龙大道站"
+    },
+    {
+        "allSell": "90天成交9套",
+        "area": "东湖高新",
+        "buildYear": "2010年建成",
+        "detailArea": "金融港",
+        "gaodeInfo": [
+            {
+                "address": "佛祖岭社区D区对面",
+                "adname": "江夏区",
+                "cityname": "武汉市",
+                "id": "B001B1GM7S",
+                "location": "114.438867,30.446358",
+                "name": "万科魅力之城南区",
+                "pname": "湖北省",
+                "type": "商务住宅;住宅区;住宅小区"
+            },
+            {
+                "address": "光谷一路与中芯一路交叉口",
+                "adname": "江夏区",
+                "cityname": "武汉市",
+                "id": "B0FFHKKING",
+                "location": "114.439830,30.446416",
+                "name": "万科魅力之城南区15区",
+                "pname": "湖北省",
+                "type": "商务住宅;住宅区;住宅小区"
+            }
+        ],
+        "lease": "49套正在出租",
+        "name": "万科魅力之城南区",
+        "nowSell": "66",
+        "price": "22226",
+        "subway": "近地铁2号线佛祖岭站"
+    },
+    {
+        "allSell": "90天成交6套",
+        "area": "江汉",
+        "buildYear": "2012年建成",
+        "detailArea": "长港路",
+        "gaodeInfo": [],
+        "lease": "68套正在出租",
+        "name": "电建地产盛世江城",
+        "nowSell": "65",
+        "price": "20245",
+        "subway": "近地铁2号线长港路站"
+    },
+    {
+        "allSell": "90天成交8套",
+        "area": "洪山",
+        "buildYear": "2008年建成",
+        "detailArea": "虎泉杨家湾",
+        "gaodeInfo": [
+            {
+                "address": "虎泉街299号(地铁二号线杨家湾站旁)",
+                "adname": "洪山区",
+                "cityname": "武汉市",
+                "id": "B001B1EGZC",
+                "location": "114.384214,30.509650",
+                "name": "保利华都2期",
+                "pname": "湖北省",
+                "type": "商务住宅;住宅区;住宅小区"
+            }
+        ],
+        "lease": "136套正在出租",
+        "name": "保利华都",
+        "nowSell": "109",
+        "price": "25909",
+        "subway": "近地铁2号线杨家湾站"
+    },
+    {
+        "allSell": "90天成交7套",
+        "area": "江岸",
+        "buildYear": "2006年建成",
+        "detailArea": "后湖",
+        "gaodeInfo": [],
+        "lease": "80套正在出租",
+        "name": "统建同安家园",
+        "nowSell": "179",
+        "price": "17771",
+        "subway": "近地铁21号线(阳逻线)后湖大道站"
+    },
+    {
+        "allSell": "90天成交6套",
+        "area": "黄陂",
+        "buildYear": "2007年建成",
+        "detailArea": "盘龙城",
+        "gaodeInfo": [
+            {
+                "address": "露甲山路3号",
+                "adname": "黄陂区",
+                "cityname": "武汉市",
+                "id": "B001B0JLA6",
+                "location": "114.247599,30.70854",
+                "name": "鼎鑫摩卡小镇",
+                "pname": "湖北省",
+                "type": "商务住宅;住宅区;住宅小区"
+            }
+        ],
+        "lease": "50套正在出租",
+        "name": "鼎鑫摩卡小镇",
+        "nowSell": "125",
+        "price": "10972",
+        "subway": "近地铁2号线巨龙大道站"
+    },
+    {
+        "allSell": "90天成交2套",
+        "area": "东湖高新",
+        "buildYear": "2003年建成",
+        "detailArea": "关山大道",
+        "gaodeInfo": [
+            {
+                "address": "关山大道与雄楚大道交叉口",
+                "adname": "洪山区",
+                "cityname": "武汉市",
+                "id": "B001B1CQVG",
+                "location": "114.410902,30.498031",
+                "name": "保利花园3期",
+                "pname": "湖北省",
+                "type": "商务住宅;住宅区;住宅小区"
+            },
+            {
+                "address": "关山大道218",
+                "adname": "洪山区",
+                "cityname": "武汉市",
+                "id": "B001B18NZD",
+                "location": "114.411004,30.498065",
+                "name": "保利花园(象鼻山社区长航小区东南)",
+                "pname": "湖北省",
+                "type": "商务住宅;住宅区;住宅小区"
+            }
+        ],
+        "lease": "38套正在出租",
+        "name": "保利花园",
+        "nowSell": "110",
+        "price": "20833",
+        "subway": "近地铁2号线华中科技大学站"
+    },
+    {
+        "allSell": "90天成交3套",
+        "area": "黄陂",
+        "buildYear": "2008年建成",
+        "detailArea": "盘龙城",
+        "gaodeInfo": [
+            {
+                "address": "巨龙大道与宋岗一路交汇处(管委会附近)",
+                "adname": "黄陂区",
+                "cityname": "武汉市",
+                "id": "B001B1EGPC",
+                "location": "114.243968,30.723672",
+                "name": "万润橄榄城",
+                "pname": "湖北省",
+                "type": "商务住宅;住宅区;住宅小区"
+            }
+        ],
+        "lease": "61套正在出租",
+        "name": "万润橄榄城",
+        "nowSell": "102",
+        "price": "11731",
+        "subway": "近地铁2号线宋家岗站"
+    },
+    {
+        "allSell": "90天成交7套",
+        "area": "武昌",
+        "buildYear": "2005年建成",
+        "detailArea": "积玉桥",
+        "gaodeInfo": [],
+        "lease": "80套正在出租",
+        "name": "融侨华府",
+        "nowSell": "83",
+        "price": "26461",
+        "subway": "近地铁7号线新河街站"
+    },
+    {
+        "allSell": "90天成交2套",
+        "area": "江岸",
+        "buildYear": "2015年建成",
+        "detailArea": "塔子湖",
+        "gaodeInfo": [
+            {
+                "address": "华隆路66号",
+                "adname": "江岸区",
+                "cityname": "武汉市",
+                "id": "B0FFG4TVC3",
+                "location": "114.291826,30.656333",
+                "name": "绿地汉口中心",
+                "pname": "湖北省",
+                "type": "商务住宅;住宅区;住宅小区"
+            }
+        ],
+        "lease": "14套正在出租",
+        "name": "绿地汉口中心",
+        "nowSell": "31",
+        "price": "18331",
+        "subway": "近地铁3号线市民之家站"
+    },
+    {
+        "allSell": "90天成交3套",
+        "area": "汉阳",
+        "buildYear": "2015年建成",
+        "detailArea": "王家湾",
+        "gaodeInfo": [
+            {
+                "address": "汉阳大道",
+                "adname": "汉阳区",
+                "cityname": "武汉市",
+                "id": "B0FFG6HH1M",
+                "location": "114.203324,30.561601",
+                "name": "王家湾中央生活区",
+                "pname": "湖北省",
+                "type": "商务住宅;住宅区;住宅小区"
+            }
+        ],
+        "lease": "69套正在出租",
+        "name": "王家湾中央生活区",
+        "nowSell": "48",
+        "price": "17594",
+        "subway": "近地铁4号线玉龙路站"
+    },
+    {
+        "allSell": "90天成交3套",
+        "area": "洪山",
+        "buildYear": "2012年建成",
+        "detailArea": "珞狮南路",
+        "gaodeInfo": [],
+        "lease": "43套正在出租",
+        "name": "保利心语七期",
+        "nowSell": "38",
+        "price": "20108",
+        "subway": "近地铁7号线湖工大站"
+    },
+    {
+        "allSell": "90天成交1套",
+        "area": "洪山",
+        "buildYear": "2011年建成",
+        "detailArea": "珞狮南路",
+        "gaodeInfo": [],
+        "lease": "16套正在出租",
+        "name": "保利心语九期",
+        "nowSell": "45",
+        "price": "18683",
+        "subway": "近地铁7号线板桥站"
+    },
+    {
+        "allSell": "90天成交5套",
+        "area": "武昌",
+        "buildYear": "2018年建成",
+        "detailArea": "沙湖",
+        "gaodeInfo": [
+            {
+                "address": "沙湖大道西150米",
+                "adname": "武昌区",
+                "cityname": "武汉市",
+                "id": "B0FFGCB7YD",
+                "location": "114.351062,30.57523",
+                "name": "金沙泊岸",
+                "pname": "湖北省",
+                "type": "商务住宅;住宅区;住宅小区"
+            }
+        ],
+        "lease": "54套正在出租",
+        "name": "金沙泊岸",
+        "nowSell": "87",
+        "price": "29431",
+        "subway": "近地铁4号线东亭站"
+    },
+    {
+        "allSell": "90天成交5套",
+        "area": "江岸",
+        "buildYear": "2015年建成",
+        "detailArea": "百步亭",
+        "gaodeInfo": [],
+        "lease": "37套正在出租",
+        "name": "海赋江城天韵",
+        "nowSell": "53",
+        "price": "21670",
+        "subway": "近地铁3号线兴业路站"
+    },
+    {
+        "allSell": "90天成交4套",
+        "area": "汉阳",
+        "buildYear": "2011年建成",
+        "detailArea": "王家湾",
+        "gaodeInfo": [
+            {
+                "address": "康达街10号",
+                "adname": "汉阳区",
+                "cityname": "武汉市",
+                "id": "B0FFFRYFH0",
+                "location": "114.194337,30.54608",
+                "name": "万科汉阳国际B区",
+                "pname": "湖北省",
+                "type": "商务住宅;住宅区;住宅小区"
+            }
+        ],
+        "lease": "16套正在出租",
+        "name": "万科汉阳国际B区",
+        "nowSell": "41",
+        "price": "18082",
+        "subway": "近地铁3号线陶家岭站"
+    },
+    {
+        "allSell": "90天成交7套",
+        "area": "江岸",
+        "buildYear": "2004年建成",
+        "detailArea": "二七",
+        "gaodeInfo": [
+            {
+                "address": "工农兵路152号",
+                "adname": "江岸区",
+                "cityname": "武汉市",
+                "id": "B001B0IK36",
+                "location": "114.312675,30.624474",
+                "name": "东立国际",
+                "pname": "湖北省",
+                "type": "商务住宅;住宅区;住宅小区"
+            }
+        ],
+        "lease": "89套正在出租",
+        "name": "东立国际",
+        "nowSell": "164",
+        "price": "22697",
+        "subway": "近地铁1号线二七路站"
+    },
+    {
+        "allSell": "90天成交5套",
+        "area": "洪山",
+        "buildYear": "2008年建成",
+        "detailArea": "徐东",
+        "gaodeInfo": [
+            {
+                "address": "欢乐大道杨园南路",
+                "adname": "洪山区",
+                "cityname": "武汉市",
+                "id": "B001B16O3S",
+                "location": "114.361066,30.581668",
+                "name": "华腾园",
+                "pname": "湖北省",
+                "type": "商务住宅;住宅区;住宅小区"
+            }
+        ],
+        "lease": "70套正在出租",
+        "name": "华腾园",
+        "nowSell": "93",
+        "price": "20734",
+        "subway": "近地铁4号线岳家嘴站"
+    },
+    {
+        "allSell": "90天成交7套",
+        "area": "江岸",
+        "buildYear": "2008年建成",
+        "detailArea": "百步亭",
+        "gaodeInfo": [
+            {
+                "address": "兴业路与百步亭花园路交汇处",
+                "adname": "江岸区",
+                "cityname": "武汉市",
+                "id": "B001B16VI5",
+                "location": "114.315374,30.649316",
+                "name": "万锦江城",
+                "pname": "湖北省",
+                "type": "商务住宅;住宅区;住宅小区"
+            }
+        ],
+        "lease": "21套正在出租",
+        "name": "万锦江城",
+        "nowSell": "53",
+        "price": "22314",
+        "subway": "近地铁21号线(阳逻线)百步亭花园路站"
+    },
+    {
+        "allSell": "90天成交10套",
+        "area": "洪山",
+        "buildYear": "2006年建成",
+        "detailArea": "南湖沃尔玛",
+        "gaodeInfo": [
+            {
+                "address": "建安街300号",
+                "adname": "武昌区",
+                "cityname": "武汉市",
+                "id": "B001B0J0C3",
+                "location": "114.322875,30.502393",
+                "name": "水域天际",
+                "pname": "湖北省",
+                "type": "商务住宅;住宅区;住宅小区"
+            }
+        ],
+        "lease": "79套正在出租",
+        "name": "水域天际",
+        "nowSell": "93",
+        "price": "25402",
+        "subway": "近地铁7号线建安街站"
+    },
+    {
+        "allSell": "90天成交9套",
+        "area": "江夏",
+        "buildYear": "2010年建成",
+        "detailArea": "文化大道",
+        "gaodeInfo": [
+            {
+                "address": "文化大道与新华街交汇处",
+                "adname": "江夏区",
+                "cityname": "武汉市",
+                "id": "B0FFFE57HN",
+                "location": "114.314201,30.406101",
+                "name": "俪湖天地",
+                "pname": "湖北省",
+                "type": "商务住宅;住宅区;住宅小区"
+            }
+        ],
+        "lease": "47套正在出租",
+        "name": "俪湖天地",
+        "nowSell": "96",
+        "price": "15303",
+        "subway": "近地铁7号线大花岭站"
+    },
+    {
+        "allSell": "90天成交4套",
+        "area": "东湖高新",
+        "buildYear": "2003年建成",
+        "detailArea": "关山大道",
+        "gaodeInfo": [
+            {
+                "address": "大学园路1号",
+                "adname": "江夏区",
+                "cityname": "武汉市",
+                "id": "B001B15VZA",
+                "location": "114.409145,30.460223",
+                "name": "万科城市花园(大学园路)",
+                "pname": "湖北省",
+                "type": "商务住宅;住宅区;住宅小区"
+            },
+            {
+                "address": "关山大道",
+                "adname": "江夏区",
+                "cityname": "武汉市",
+                "id": "B001B1710D",
+                "location": "114.409952,30.458742",
+                "name": "万科城市花园上西10区",
+                "pname": "湖北省",
+                "type": "商务住宅;住宅区;住宅小区"
+            },
+            {
+                "address": [],
+                "adname": "江夏区",
+                "cityname": "武汉市",
+                "id": "B0FFGY5EZ7",
+                "location": "114.411396,30.459944",
+                "name": "万科城市花园上东6区",
+                "pname": "湖北省",
+                "type": "商务住宅;住宅区;住宅小区"
+            },
+            {
+                "address": "武大园一路与武大园东路交汇处西北150米",
+                "adname": "江夏区",
+                "cityname": "武汉市",
+                "id": "B0FFGY9LXS",
+                "location": "114.407843,30.457804",
+                "name": "万科城市花园上西9区",
+                "pname": "湖北省",
+                "type": "商务住宅;住宅区;住宅小区"
+            },
+            {
+                "address": "大学园路1号",
+                "adname": "江夏区",
+                "cityname": "武汉市",
+                "id": "B0FFGYKL12",
+                "location": "114.409376,30.462217",
+                "name": "万科城市花园上东7区",
+                "pname": "湖北省",
+                "type": "商务住宅;住宅区;住宅小区"
+            },
+            {
+                "address": "关山大道立交桥与郑桥小路交叉口南150米",
+                "adname": "江夏区",
+                "cityname": "武汉市",
+                "id": "B0FFGQ76AQ",
+                "location": "114.411584,30.462328",
+                "name": "万科城市花园上东3区",
+                "pname": "湖北省",
+                "type": "商务住宅;住宅区;住宅小区"
+            },
+            {
+                "address": "光谷武大园东路万科城市花园上西七区",
+                "adname": "江夏区",
+                "cityname": "武汉市",
+                "id": "B0FFG27598",
+                "location": "114.407463,30.459433",
+                "name": "万科城市花园上西7区",
+                "pname": "湖北省",
+                "type": "商务住宅;住宅区;住宅小区"
+            },
+            {
+                "address": "武大园一路附近",
+                "adname": "江夏区",
+                "cityname": "武汉市",
+                "id": "B0FFG2AXTC",
+                "location": "114.407798,30.460558",
+                "name": "万科城市花园上西1区",
+                "pname": "湖北省",
+                "type": "商务住宅;住宅区;住宅小区"
+            },
+            {
+                "address": "武大园东路1号",
+                "adname": "江夏区",
+                "cityname": "武汉市",
+                "id": "B0FFGBH68I",
+                "location": "114.407920,30.458596",
+                "name": "万科城市花园上西8区",
+                "pname": "湖北省",
+                "type": "商务住宅;住宅区;住宅小区"
+            },
+            {
+                "address": "大学园路1号",
+                "adname": "江夏区",
+                "cityname": "武汉市",
+                "id": "B0FFGYKL2N",
+                "location": "114.406993,30.456773",
+                "name": "万科城市花园上西11区",
+                "pname": "湖北省",
+                "type": "商务住宅;住宅区;住宅小区"
+            },
+            {
+                "address": "武大园一路与郑桥小路交叉口西南150米",
+                "adname": "江夏区",
+                "cityname": "武汉市",
+                "id": "B0FFJ17NW2",
+                "location": "114.412273,30.460017",
+                "name": "万科城市花园上东5区",
+                "pname": "湖北省",
+                "type": "商务住宅;住宅区;住宅小区"
+            },
+            {
+                "address": "万科城市花园内",
+                "adname": "江夏区",
+                "cityname": "武汉市",
+                "id": "B0FFF05EH8",
+                "location": "114.408498,30.460010",
+                "name": "万科城市花园特1区",
+                "pname": "湖北省",
+                "type": "商务住宅;住宅区;住宅小区"
+            }
+        ],
+        "lease": "15套正在出租",
+        "name": "万科城市花园",
+        "nowSell": "89",
+        "price": "24758",
+        "subway": "近地铁2号线金融港北站"
+    },
+    {
+        "allSell": "90天成交7套",
+        "area": "东湖高新",
+        "buildYear": "2013年建成",
+        "detailArea": "金融港",
+        "gaodeInfo": [],
+        "lease": "17套正在出租",
+        "name": "金地艺境",
+        "nowSell": "67",
+        "price": "20388",
+        "subway": "近地铁2号线佛祖岭站"
+    },
+    {
+        "allSell": "90天成交1套",
+        "area": "汉阳",
+        "buildYear": "2008年建成",
+        "detailArea": "王家湾",
+        "gaodeInfo": [
+            {
+                "address": "龙阳大道95号(墨水湖对面)",
+                "adname": "汉阳区",
+                "cityname": "武汉市",
+                "id": "B0FFFRIX4T",
+                "location": "114.206584,30.540069",
+                "name": "南国明珠二期",
+                "pname": "湖北省",
+                "type": "商务住宅;住宅区;住宅小区"
+            }
+        ],
+        "lease": "15套正在出租",
+        "name": "南国明珠二期",
+        "nowSell": "22",
+        "price": "17945",
+        "subway": "近地铁3号线陶家岭站"
+    },
+    {
+        "allSell": "90天成交2套",
+        "area": "江汉",
+        "buildYear": "2016年建成",
+        "detailArea": "杨汊湖",
+        "gaodeInfo": [],
+        "lease": "47套正在出租",
+        "name": "万科汉口传奇唐樾",
+        "nowSell": "23",
+        "price": "25034",
+        "subway": "近地铁6号线唐家墩站"
+    },
+    {
+        "allSell": "90天成交1套",
+        "area": "江夏",
+        "buildYear": "2001年建成",
+        "detailArea": "文化大道",
+        "gaodeInfo": [
+            {
+                "address": "文化大道6号(区政府新址对面)",
+                "adname": "江夏区",
+                "cityname": "武汉市",
+                "id": "B0FFF5TQUJ",
+                "location": "114.323338,30.37458",
+                "name": "江郡华府",
+                "pname": "湖北省",
+                "type": "商务住宅;住宅区;住宅小区"
+            }
+        ],
+        "lease": "29套正在出租",
+        "name": "江郡华府",
+        "nowSell": "57",
+        "price": "13986",
+        "subway": "近地铁7号线谭鑫培公园站"
+    },
+    {
+        "allSell": "90天成交2套",
+        "area": "江汉",
+        "buildYear": "2008年建成",
+        "detailArea": "CBD西北湖",
+        "gaodeInfo": [
+            {
+                "address": "中央商务区淮海路中段(红领巾学校旁)",
+                "adname": "江汉区",
+                "cityname": "武汉市",
+                "id": "B0FFH7Y728",
+                "location": "114.236045,30.599464",
+                "name": "泛海国际桂海园",
+                "pname": "湖北省",
+                "type": "商务住宅;住宅区;住宅小区"
+            }
+        ],
+        "lease": "46套正在出租",
+        "name": "泛海国际桂海园",
+        "nowSell": "44",
+        "price": "31187",
+        "subway": "近地铁7号线常码头站"
+    },
+    {
+        "allSell": "90天成交3套",
+        "area": "汉阳",
+        "buildYear": "2015年建成",
+        "detailArea": "四新",
+        "gaodeInfo": [],
+        "lease": "27套正在出租",
+        "name": "纽宾凯汉city国际社区锦城",
+        "nowSell": "37",
+        "price": "17823",
+        "subway": "近地铁3号线四新大道站"
+    },
+    {
+        "allSell": "90天成交0套",
+        "area": "黄陂",
+        "buildYear": "2003年建成",
+        "detailArea": "盘龙城",
+        "gaodeInfo": [
+            {
+                "address": "巨龙大道与兴龙路交叉口",
+                "adname": "黄陂区",
+                "cityname": "武汉市",
+                "id": "B0FFG66S6V",
+                "location": "114.231913,30.718591",
+                "name": "恒大龙城",
+                "pname": "湖北省",
+                "type": "商务住宅;住宅区;住宅小区"
+            },
+            {
+                "address": "巨龙大道兴龙路口",
+                "adname": "黄陂区",
+                "cityname": "武汉市",
+                "id": "B0FFGDJPRG",
+                "location": "114.227778,30.721327",
+                "name": "恒大龙城御湖湾",
+                "pname": "湖北省",
+                "type": "商务住宅;住宅区;住宅小区"
+            }
+        ],
+        "lease": "63套正在出租",
+        "name": "恒大龙城",
+        "nowSell": "76",
+        "price": "11737",
+        "subway": "近地铁2号线宋家岗站"
+    },
+    {
+        "allSell": "90天成交3套",
+        "area": "江岸",
+        "buildYear": "2011年建成",
+        "detailArea": "百步亭",
+        "gaodeInfo": [
+            {
+                "address": "百步亭花园路160-162号(后湖大道与百步亭花园路交汇处)",
+                "adname": "江岸区",
+                "cityname": "武汉市",
+                "id": "B001B1D73O",
+                "location": "114.31341,30.655623",
+                "name": "幸福时代",
+                "pname": "湖北省",
+                "type": "商务住宅;住宅区;住宅小区"
+            },
+            {
+                "address": "百步亭花园路160到162号",
+                "adname": "江岸区",
+                "cityname": "武汉市",
+                "id": "B0FFGKB19A",
+                "location": "114.313904,30.656647",
+                "name": "幸福时代3期",
+                "pname": "湖北省",
+                "type": "商务住宅;住宅区;住宅小区"
+            },
+            {
+                "address": "新益街与百步亭花园路交叉口西150米",
+                "adname": "江岸区",
+                "cityname": "武汉市",
+                "id": "B0FFGFRJVB",
+                "location": "114.313412,30.656988",
+                "name": "幸福时代北区",
+                "pname": "湖北省",
+                "type": "商务住宅;住宅区;住宅小区"
+            },
+            {
+                "address": "新益街与温馨路交叉口东150米",
+                "adname": "江岸区",
+                "cityname": "武汉市",
+                "id": "B0FFGFRBJ1",
+                "location": "114.313429,30.654881",
+                "name": "幸福时代南区",
+                "pname": "湖北省",
+                "type": "商务住宅;住宅区;住宅小区"
+            },
+            {
+                "address": "后湖大道与百步亭路交汇处汉铁高中旁",
+                "adname": "江岸区",
+                "cityname": "武汉市",
+                "id": "B0FFLEOJ6K",
+                "location": "114.323647,30.657296",
+                "name": "幸福时代大家",
+                "pname": "湖北省",
+                "type": "商务住宅;住宅区;住宅小区"
+            }
+        ],
+        "lease": "21套正在出租",
+        "name": "幸福时代",
+        "nowSell": "53",
+        "price": "19436",
+        "subway": "近地铁21号线(阳逻线)百步亭花园路站"
+    },
+    {
+        "allSell": "90天成交6套",
+        "area": "汉阳",
+        "buildYear": "2016年建成",
+        "detailArea": "钟家村",
+        "gaodeInfo": [],
+        "lease": "26套正在出租",
+        "name": "世茂锦绣长江五期",
+        "nowSell": "67",
+        "price": "24496",
+        "subway": "近地铁6号线马鹦路站"
+    },
+    {
+        "allSell": "90天成交1套",
+        "area": "武昌",
+        "buildYear": "2015年建成",
+        "detailArea": "中南丁字桥",
+        "gaodeInfo": [
+            {
+                "address": "宝通寺路",
+                "adname": "武昌区",
+                "cityname": "武汉市",
+                "id": "B0FFG0U31V",
+                "location": "114.334419,30.524889",
+                "name": "百瑞景中央生活区四期",
+                "pname": "湖北省",
+                "type": "商务住宅;住宅区;住宅小区"
+            }
+        ],
+        "lease": "18套正在出租",
+        "name": "百瑞景中央生活区四期",
+        "nowSell": "16",
+        "price": "30430",
+        "subway": "近地铁2号线宝通寺站"
+    },
+    {
+        "allSell": "90天成交3套",
+        "area": "江汉",
+        "buildYear": "2011年建成",
+        "detailArea": "长港路",
+        "gaodeInfo": [
+            {
+                "address": "常青路中段(靠近汉口火车站)",
+                "adname": "江汉区",
+                "cityname": "武汉市",
+                "id": "B001B0JSCO",
+                "location": "114.246008,30.619901",
+                "name": "福星惠誉·福星城北区",
+                "pname": "湖北省",
+                "type": "商务住宅;住宅区;住宅小区"
+            }
+        ],
+        "lease": "85套正在出租",
+        "name": "福星城北区",
+        "nowSell": "78",
+        "price": "17053",
+        "subway": "近地铁2号线长港路站"
+    },
+    {
+        "allSell": "90天成交1套",
+        "area": "东西湖",
+        "buildYear": "2010年建成",
+        "detailArea": "常青花园",
+        "gaodeInfo": [],
+        "lease": "57套正在出租",
+        "name": "美联奥林匹克花园一期",
+        "nowSell": "78",
+        "price": "18240",
+        "subway": "近地铁2号线金银潭站"
+    },
+    {
+        "allSell": "90天成交0套",
+        "area": "武昌",
+        "buildYear": "2010年建成",
+        "detailArea": "中南丁字桥",
+        "gaodeInfo": [],
+        "lease": "14套正在出租",
+        "name": "帝斯曼国际中心",
+        "nowSell": "9",
+        "price": "44508",
+        "subway": "近地铁2号线中南路站"
+    },
+    {
+        "allSell": "90天成交1套",
+        "area": "江汉",
+        "buildYear": "2014年建成",
+        "detailArea": "长港路",
+        "gaodeInfo": [
+            {
+                "address": "唐家墩街街道新华路华南海鲜市场北100米",
+                "adname": "江汉区",
+                "cityname": "武汉市",
+                "id": "B0FFHEJZAD",
+                "location": "114.260844,30.619136",
+                "name": "万科汉口传奇悦庭",
+                "pname": "湖北省",
+                "type": "商务住宅;住宅区;住宅小区"
+            }
+        ],
+        "lease": "51套正在出租",
+        "name": "万科汉口传奇悦庭",
+        "nowSell": "29",
+        "price": "23680",
+        "subway": "近地铁6号线唐家墩站"
+    },
+    {
+        "allSell": "90天成交1套",
+        "area": "东西湖",
+        "buildYear": "2012年建成",
+        "detailArea": "常青花园",
+        "gaodeInfo": [],
+        "lease": "27套正在出租",
+        "name": "新世界常青花园雁溪山",
+        "nowSell": "32",
+        "price": "23618",
+        "subway": "近地铁2号线金银潭站"
+    },
+    {
+        "allSell": "90天成交12套",
+        "area": "东湖高新",
+        "buildYear": "2005年建成",
+        "detailArea": "金融港",
+        "gaodeInfo": [],
+        "lease": "23套正在出租",
+        "name": "当代国际花园四期",
+        "nowSell": "85",
+        "price": "23419",
+        "subway": "近地铁2号线金融港北站"
+    },
+    {
+        "allSell": "90天成交1套",
+        "area": "江岸",
+        "buildYear": "2008年建成",
+        "detailArea": "二七",
+        "gaodeInfo": [],
+        "lease": "59套正在出租",
+        "name": "航天双城",
+        "nowSell": "67",
+        "price": "25613",
+        "subway": "近地铁1号线二七路站"
+    },
+    {
+        "allSell": "90天成交2套",
+        "area": "武昌",
+        "buildYear": "2006年建成",
+        "detailArea": "沙湖",
+        "gaodeInfo": [
+            {
+                "address": "秦园东路",
+                "adname": "武昌区",
+                "cityname": "武汉市",
+                "id": "B001B0J33F",
+                "location": "114.344266,30.576034",
+                "name": "水岸星城",
+                "pname": "湖北省",
+                "type": "商务住宅;住宅区;住宅小区"
+            },
+            {
+                "address": "徐东二路秦园东路",
+                "adname": "武昌区",
+                "cityname": "武汉市",
+                "id": "B001B0JTW0",
+                "location": "114.339654,30.573317",
+                "name": "福星惠誉·水岸星城C区",
+                "pname": "湖北省",
+                "type": "商务住宅;住宅区;住宅小区"
+            }
+        ],
+        "lease": "136套正在出租",
+        "name": "水岸星城",
+        "nowSell": "172",
+        "price": "29327",
+        "subway": "近地铁8号线汪家墩站"
+    },
+    {
+        "allSell": "90天成交0套",
+        "area": "东西湖",
+        "buildYear": "2010年建成",
+        "detailArea": "将军路",
+        "gaodeInfo": [],
+        "lease": "20套正在出租",
+        "name": "愿景城B区",
+        "nowSell": "38",
+        "price": "13795",
+        "subway": "近地铁2号线金银潭站"
+    },
+    {
+        "allSell": "90天成交0套",
+        "area": "江汉",
+        "buildYear": "2002年建成",
+        "detailArea": "CBD西北湖",
+        "gaodeInfo": [
+            {
+                "address": "振兴路288号(百盛量贩店旁)",
+                "adname": "江汉区",
+                "cityname": "武汉市",
+                "id": "B001B0IZP9",
+                "location": "114.250138,30.60623",
+                "name": "航天花园",
+                "pname": "湖北省",
+                "type": "商务住宅;住宅区;住宅小区"
+            }
+        ],
+        "lease": "13套正在出租",
+        "name": "航天花园",
+        "nowSell": "23",
+        "price": "20055",
+        "subway": "近地铁3号线云飞路站"
+    },
+    {
+        "allSell": "90天成交3套",
+        "area": "江岸",
+        "buildYear": "2014年建成",
+        "detailArea": "堤角",
+        "gaodeInfo": [
+            {
+                "address": "汉黄路6号",
+                "adname": "江岸区",
+                "cityname": "武汉市",
+                "id": "B0FFMD8GTN",
+                "location": "114.332694,30.662050",
+                "name": "福星惠誉红桥城LOFT",
+                "pname": "湖北省",
+                "type": "商务住宅;住宅区;住宅小区"
+            }
+        ],
+        "lease": "28套正在出租",
+        "name": "福星惠誉红桥城",
+        "nowSell": "61",
+        "price": "16371",
+        "subway": "近地铁21号线(阳逻线)新荣客运站站"
+    },
+    {
+        "allSell": "90天成交2套",
+        "area": "东湖高新",
+        "buildYear": "2013年建成",
+        "detailArea": "光谷东",
+        "gaodeInfo": [
+            {
+                "address": "高新大道与光谷六路交汇处",
+                "adname": "洪山区",
+                "cityname": "武汉市",
+                "id": "B0FFG7OYCD",
+                "location": "114.516608,30.491918",
+                "name": "中建光谷之星",
+                "pname": "湖北省",
+                "type": "商务住宅;住宅区;住宅小区"
+            }
+        ],
+        "lease": "5套正在出租",
+        "name": "中建光谷之星",
+        "nowSell": "39",
+        "price": "20393",
+        "subway": "近地铁11号线光谷六路站"
+    },
+    {
+        "allSell": "90天成交3套",
+        "area": "武昌",
+        "buildYear": "2013年建成",
+        "detailArea": "沙湖",
+        "gaodeInfo": [],
+        "lease": "128套正在出租",
+        "name": "福星惠誉国际城三期",
+        "nowSell": "80",
+        "price": "24792",
+        "subway": "近地铁8号线汪家墩站"
+    },
+    {
+        "allSell": "90天成交1套",
+        "area": "东湖高新",
+        "buildYear": "2013年建成",
+        "detailArea": "关西长职",
+        "gaodeInfo": [],
+        "lease": "63套正在出租",
+        "name": "金地雄楚一号",
+        "nowSell": "64",
+        "price": "20796",
+        "subway": "近地铁2号线杨家湾站"
+    },
+    {
+        "allSell": "90天成交5套",
+        "area": "江岸",
+        "buildYear": "2001年建成",
+        "detailArea": "百步亭",
+        "gaodeInfo": [],
+        "lease": "29套正在出租",
+        "name": "银泰御华园二期",
+        "nowSell": "17",
+        "price": "25830",
+        "subway": "近地铁3号线兴业路站"
+    },
+    {
+        "allSell": "90天成交0套",
+        "area": "江岸",
+        "buildYear": "2013年建成",
+        "detailArea": "塔子湖",
+        "gaodeInfo": [
+            {
+                "address": "塔子湖东路与井南一路交汇处",
+                "adname": "江岸区",
+                "cityname": "武汉市",
+                "id": "B0FFF00QLG",
+                "location": "114.278583,30.641899",
+                "name": "奥林紫园",
+                "pname": "湖北省",
+                "type": "商务住宅;住宅区;住宅小区"
+            }
+        ],
+        "lease": "8套正在出租",
+        "name": "奥林紫园",
+        "nowSell": "11",
+        "price": "17134",
+        "subway": "近地铁8号线中一路站"
+    },
+    {
+        "allSell": "90天成交3套",
+        "area": "东湖高新",
+        "buildYear": "2015年建成",
+        "detailArea": "金融港",
+        "gaodeInfo": [],
+        "lease": "30套正在出租",
+        "name": "平安光谷春天",
+        "nowSell": "46",
+        "price": "18949",
+        "subway": "近地铁2号线佛祖岭站"
+    },
+    {
+        "allSell": "90天成交3套",
+        "area": "东西湖",
+        "buildYear": "2008年建成",
+        "detailArea": "将军路",
+        "gaodeInfo": [
+            {
+                "address": "姑李公路与S19机场二高速交叉口东150米",
+                "adname": "东西湖区",
+                "cityname": "武汉市",
+                "id": "B0FFG9VJSG",
+                "location": "114.247741,30.653903",
+                "name": "凯旋名居",
+                "pname": "湖北省",
+                "type": "商务住宅;住宅区;住宅小区"
+            }
+        ],
+        "lease": "16套正在出租",
+        "name": "凯旋名居",
+        "nowSell": "26",
+        "price": "13908",
+        "subway": "近地铁2号线金银潭站"
+    },
+    {
+        "allSell": "90天成交1套",
+        "area": "江汉",
+        "buildYear": "2011年建成",
+        "detailArea": "台北香港路",
+        "gaodeInfo": [],
+        "lease": "3套正在出租",
+        "name": "穗丰花园四期",
+        "nowSell": "12",
+        "price": "20515",
+        "subway": "近地铁3号线香港路站"
+    }
+]

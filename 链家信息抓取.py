@@ -1,8 +1,10 @@
 #https://wh.lianjia.com/xiaoqu/su1/?from=rec
 #爬取小区名字等信息
+#按页码只拿到30页信息，需要按网址继续抓取
+#当前仅为武汉近地铁，后期加入城市、价格、位置选择，楼龄20年内
 import requests
 from bs4 import BeautifulSoup
-from lxml import etree
+import random
 import asyncio
 import time
 import re
@@ -15,23 +17,36 @@ def get_num():
     num = int(etree.HTML(r).xpath("//h2[@class='total fl']/span/text()")[0].strip())
     print(num)
  
-
+infoList = []
 def getPage():
     r = requests.get("https://wh.lianjia.com/xiaoqu/su1/?from=rec")       
     soup = BeautifulSoup(r.text, "html5lib")
     pagenum = eval(soup.html.body.find(class_="page-box house-lst-page-box").attrs["page-data"])["totalPage"]
     print(pagenum)
-    getInfo(1)
+    i = 1
+    pagenum = 2
+    while(i <= pagenum):
+        
+        time.sleep(random.randint(1, 10))
+        print(i)
+        getInfo(i)
+        i = i+1
+        
 
+    jstr = json.dumps(infoList, indent=2,sort_keys=True, ensure_ascii=False)
+    saveUrl = "./数据资源/" + "链家信息"  + ".json"
+    with open(saveUrl, "w", encoding='utf8') as f:
+        f.write(jstr)
 
 def getInfo(i):
-    url = "https://wh.lianjia.com/xiaoqu/su" + str(i) + "/?from=rec"
+    url = "https://wh.lianjia.com/xiaoqu/su1pg"+ str(i) +"y4/"
+    print(url)
     r = requests.get(url)
         
     soup = BeautifulSoup(r.text, "html5lib")
     list1 = soup.html.body.find_all(class_="clear xiaoquListItem")
 
-    infoList = []
+    
     
     for child in list1:
         infoDict = {}
@@ -45,10 +60,8 @@ def getInfo(i):
         infoDict['price'] = child.find(class_="xiaoquListItemRight").find(class_="totalPrice").span.text.strip() #小区均价
         infoDict['nowSell'] = child.find(class_="xiaoquListItemRight").find(class_="xiaoquListItemSellCount").a.span.text.strip() #小区在售套数
         infoList.append(infoDict)
-    jstr = json.dumps(infoList, indent=2,sort_keys=True, ensure_ascii=False)
-    saveUrl = "./小区名称ID对应表/" + "小区列表与简要信息"  + ".json"
-    with open(saveUrl, "w", encoding='utf8') as f:
-        f.write(jstr)
+    print("第" + str(i) + "页抓取完成")
+
 
 #print (soup.html.body.find_all(class_="leftContent"))
 getPage()

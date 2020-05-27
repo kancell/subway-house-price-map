@@ -10,18 +10,36 @@ import json
 
 url = "https://www.amap.com/detail/get/detail?id"
 
-def loadJson():
-    with open("./小区名称ID对应表/国际百纳.json",'r',encoding='utf8') as loadInfo:
-        info  = json.load(loadInfo)
-        return info
+def loadId():
+    with open("./数据资源/高德信息.json",'r',encoding='utf8') as loadInfo:
+        idInfo  = json.load(loadInfo)
+        return idInfo
+
+def loadName():
+    with open("./数据资源/链家信息.json",'r',encoding='utf8') as loadInfo:
+        NameInfo  = json.load(loadInfo)
+        return NameInfo
+
+
+allInfo = []
 
 def generator():
-    info = loadJson()
-    for item in info: 
-        if item["name"] == "国际百纳":
-            getInfo(url, item["id"])
-
-
+    idInfo = loadId()
+    NameInfo = loadName()
+    for name in NameInfo: 
+        cache = []
+        for id1 in idInfo:
+            if id1["type"] == "商务住宅;住宅区;住宅小区":
+                if name["name"] in id1["name"]:                   
+                    cache.append(id1)
+        name["gaodeInfo"] = cache
+        allInfo.append(name)
+        print(name["name"],"匹配")
+    jstr = json.dumps(allInfo, indent=4, sort_keys=True, ensure_ascii=False)
+    saveUrl = "./数据资源/" + "小区信息聚合" + ".json"
+    with open(saveUrl, "w", encoding='utf8') as f:
+        f.write(jstr)
+'''
 def getInfo(url, id):
     header = {
         "Accept": "*/*",
@@ -42,5 +60,5 @@ def getInfo(url, id):
     r = requests.get(url, headers = header,verify=False,params=data).json()
     info = r["data"]["spec"]["mining_shape"]["shape"]
     print(info)
-
+'''
 generator()
