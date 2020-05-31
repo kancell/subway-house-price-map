@@ -19,7 +19,11 @@ def loadName():
     with open("./数据资源/链家信息.json",'r',encoding='utf8') as loadInfo:
         NameInfo  = json.load(loadInfo)
         return NameInfo
-
+        
+def loadSpec():
+    with open("./数据资源/小区轮廓信息.json",'r',encoding='utf8') as loadSpec:
+        SpecInfo  = json.load(loadSpec)
+        return SpecInfo
 
 allInfo = []
 
