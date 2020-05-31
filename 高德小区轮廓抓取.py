@@ -12,7 +12,6 @@ opt.add_experimental_option('excludeSwitches', ['enable-automation']) #较早版
 opt.add_experimental_option('useAutomationExtension', False) #较早版本的chrome跳过window.navigator.webdriver检测
 opt.add_argument('--log-level=3') #消除控制台报错
 #opt.add_argument('blink-settings=imagesEnabled=false') #浏览器无图模式
-#opt.set_headless() #使用chrome的headless模式以减少资源消耗
 driver = webdriver.Chrome(options=opt)
 driver.execute_cdp_cmd("Page.addScriptToEvaluateOnNewDocument", {
   "source": """
@@ -21,6 +20,7 @@ driver.execute_cdp_cmd("Page.addScriptToEvaluateOnNewDocument", {
     })
   """
 }) #新版chrome跳过window.navigator.webdriver检测
+
 header = {
     "Accept": "*/*",
     "Accept-Encoding": "gzip, deflate, br",

@@ -1,4 +1,5 @@
 #根据小区名字抓取高德地图中的小区id
+#需处理重名等问题
 import requests
 from bs4 import BeautifulSoup
 import asyncio

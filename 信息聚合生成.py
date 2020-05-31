@@ -30,12 +30,22 @@ allInfo = []
 def generator():
     idInfo = loadId()
     NameInfo = loadName()
+    specInfo = loadSpec()
     for name in NameInfo: 
         cache = []
         for id1 in idInfo:
-            if "住宅区" in id1["type"]:
+            for spec in specInfo:
+                if id1["id"] == spec["id"]:
+                    chche2 = spec["data"]["data"]["spec"]
+                    if "mining_shape" in chche2:
+                        id1["spec"] = chche2["mining_shape"]
+                    else:
+                        id1["spec"] = {}
+
+            if "住宅" in id1["type"]:
                 if name["name"] in id1["name"].replace("·",""):                   
                     cache.append(id1)
+
         name["gaodeInfo"] = cache
         allInfo.append(name)
         print(name["name"],"匹配")
