@@ -33,7 +33,7 @@ export default {
 	},
 	methods: {
 		threeDInit() {
-			this.buildingLayer = new AMap.Buildings({zIndex:130,merge:false,sort:false,zooms:[1,20]});
+			this.buildingLayer = new AMap.Buildings({zIndex:130,merge:false,sort:false,zooms:[3,20]});
 			this.options = 
 			{
 				hideWithoutStyle: true,
@@ -71,7 +71,7 @@ export default {
 			this.map = new AMap.Map("map", {
 				mapStyle: "amap://styles/175fa02b044d32dd9242f1349297fe50", 
 				resizeEnable: true,
-				zoom: 17,
+				zoom: 13,
 				//pitch:50,
 				viewMode:'3D',
 				layers:[
@@ -86,7 +86,7 @@ export default {
 					fillOpacity:0.1,
 					strokeWeight:1,
 					path:this.options.areas[i].path,
-					map:this.map
+					map:this.map,
 				})			
 			}
 			this.markadd()
@@ -99,7 +99,7 @@ export default {
 					timeout: 10000,          //超过10秒后停止定位，默认：5s
 					buttonPosition:'RB',    //定位按钮的停靠位置
 					buttonOffset: new AMap.Pixel(10, 20),//定位按钮与设置的停靠位置的偏移量，默认：Pixel(10, 20)
-					zoomToAccuracy: true,   //定位成功后是否自动调整地图视野到定位点
+					zoomToAccuracy: false,   //定位成功后是否自动调整地图视野到定位点
 
 				});
 				this.map.addControl(geolocation);
@@ -158,7 +158,9 @@ export default {
 </script>
 
 <style scoped>
-
+.crop {
+		position: absolute;
+}
 .map-contain {
 	display: flex;
 	justify-content: center;

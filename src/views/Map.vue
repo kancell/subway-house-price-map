@@ -1,7 +1,7 @@
 <template>
-  <div class="home">
-    <MapInit msg="map"/>
-  </div>
+	<div>
+		<MapInit msg="map"/>
+	</div>
 </template>
 
 <script>
@@ -9,9 +9,9 @@
 import MapInit from '@/components/MapInit.vue'
 
 export default {
-  name: 'Home',
-  components: {
-    MapInit
-  }
+	name: 'Map',
+	components: {
+		MapInit
+	}
 }
 </script>
