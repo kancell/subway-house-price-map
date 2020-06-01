@@ -1,8 +1,6 @@
 <template>
-	<div class="hello">
-		<div class="map-contain">
-			<div class="map" id="map"></div>
-		</div>
+	<div class="map-contain">
+		<div class="map" id="map"></div>
 	</div>
 </template>
 
@@ -21,8 +19,9 @@ export default {
 	},
 	mounted () {
 		this.threeDInit()
-		this.$nextTick(() => {
 
+		this.$nextTick(() => {
+			this.location()
 		})
 	},
 	data() {
@@ -40,12 +39,6 @@ export default {
 				hideWithoutStyle: true,
 				areas:[]
 			};
-			let path = { 
-					color1: 'ff99ff00',
-					color2: 'ff999900',
-					path: [[114.296003,30.617183],[114.295847,30.617175],[114.295707,30.617191],[114.294973,30.617496],[114.294089,30.617872],[114.294125,30.61822],[114.294141,30.61849],[114.294149,30.618773],[114.294168,30.619102],[114.294204,30.619147],[114.294304,30.61918],[ 114.294519,30.619213],[ 114.294777,30.61921],[114.295136,30.61915],[114.296017,30.618833],[114.296374,30.61875],[114.296704,30.618615],[114.296934,30.618489],[114.297234,30.618201],[114.296386,30.617467],[114.296076,30.617205],[114.296003,30.617183]]
-			}
-			this.options.areas.push(path)
 			//此处应有ajax请求，获取{color1：color2：path：}数据，并push入areas，回调mapinit
 			for (let spec of data) {
 				for (let specGaode of spec.gaodeInfo) {
@@ -62,7 +55,7 @@ export default {
 				}
 			}
 
-			//this.buildingLayer.setStyle(this.options);
+			this.buildingLayer.setStyle(this.options);
 			this.MapInit();
 
 		},
@@ -78,8 +71,8 @@ export default {
 			this.map = new AMap.Map("map", {
 				mapStyle: "amap://styles/175fa02b044d32dd9242f1349297fe50", 
 				resizeEnable: true,
-				zoom: 18,
-				pitch:50,
+				zoom: 17,
+				//pitch:50,
 				viewMode:'3D',
 				layers:[
 					new AMap.TileLayer(),
@@ -96,8 +89,36 @@ export default {
 					map:this.map
 				})			
 			}
+			this.markadd()
+
 		},
-		MarkAdd () {
+		location() {
+			AMap.plugin('AMap.Geolocation', () => {
+				var geolocation = new AMap.Geolocation({
+					enableHighAccuracy: true,//是否使用高精度定位，默认:true
+					timeout: 10000,          //超过10秒后停止定位，默认：5s
+					buttonPosition:'RB',    //定位按钮的停靠位置
+					buttonOffset: new AMap.Pixel(10, 20),//定位按钮与设置的停靠位置的偏移量，默认：Pixel(10, 20)
+					zoomToAccuracy: true,   //定位成功后是否自动调整地图视野到定位点
+
+				});
+				this.map.addControl(geolocation);
+				geolocation.getCurrentPosition((status,result) => {
+					if(status=='complete'){
+						this.onComplete(result)
+					}else{
+						this.onError(result)
+					}
+				});
+			});
+		},
+		onComplete(s){
+			console.log(s)
+		},
+		onError(s){
+			console.log(s)
+		},
+		circleAdd () {
 			var circle = new AMap.Circle({
 				center: new AMap.LngLat("116.405467", "39.907761"), // 圆心位置
 				radius: 1000,  //半径
@@ -109,27 +130,44 @@ export default {
 			});
 			this.map.add(circle)
 		},
+		markadd () {
+			let text = new AMap.Text({
+				text:'最近成交0套<br/>均价19808',
+				anchor:'center', // 设置文本标记锚点
+				draggable:true,
+				cursor:'pointer',
+				style:{
+					'padding': '0.3rem 0.95rem',
+					'margin-bottom': '1rem',
+					'border-radius': '0.25rem',
+					'background-color': 'white',
+					'width': '4rem',
+					'border-width': 0,
+					'box-shadow': '0 2px 6px 0 rgba(114, 124, 245, .5)',
+					'text-align': 'center',
+					'font-size': '8px',
+					'color': 'blue'
+				},
+				position: [114.28513,30.653027]
+			});
+
+			text.setMap(this.map);
+		}
 	},
 }
 </script>
 
 <style scoped>
-.hello {
-	display: flex;
-	flex-direction: column;
-	justify-content: center;
-}
+
 .map-contain {
 	display: flex;
 	justify-content: center;
+	flex-direction: column;
+	height: 600px;
 }
 .map {
 	display: flex;
-	height: 800px;
-	width: 480px;
-}
-.bm-view {
-  width: 100%;
-  height: 300px;
+	flex-grow:1;
+
 }
 </style>
