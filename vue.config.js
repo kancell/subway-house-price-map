@@ -1,6 +1,12 @@
 module.exports = {
     // ...
-
+    css: {
+        loaderOptions: {
+          less: {
+            javascriptEnabled: true
+          }
+        }
+      },
     configureWebpack(config) {
         // ...
 
@@ -8,4 +14,5 @@ module.exports = {
             'AMap': 'AMap' // 高德地图配置
         }
     }
+    
 }
