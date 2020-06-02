@@ -1,6 +1,9 @@
 <template>
 	<div class="map-contain">
-		<div class="map" id="map"></div>
+		<div class="map" id="map">
+			<h1>asdadsa</h1>
+			<a-input-search placeholder="input search text" style="width: 200px; margin-bottom:2px;" enter-button @search="onSearch" />
+		</div>
 	</div>
 </template>
 
@@ -19,7 +22,6 @@ export default {
 	},
 	mounted () {
 		this.threeDInit()
-
 		this.$nextTick(() => {
 			this.location()
 		})
@@ -32,6 +34,9 @@ export default {
 		}
 	},
 	methods: {
+		onSearch(){
+
+		},
 		threeDInit() {
 			this.buildingLayer = new AMap.Buildings({zIndex:130,merge:false,sort:false,zooms:[3,20]});
 			this.options = 
@@ -39,7 +44,6 @@ export default {
 				hideWithoutStyle: true,
 				areas:[]
 			};
-			//此处应有ajax请求，获取{color1：color2：path：}数据，并push入areas，回调mapinit
 			for (let spec of data) {
 				for (let specGaode of spec.gaodeInfo) {
 					let cachePath = {
@@ -71,7 +75,7 @@ export default {
 			this.map = new AMap.Map("map", {
 				mapStyle: "amap://styles/175fa02b044d32dd9242f1349297fe50", 
 				resizeEnable: true,
-				zoom: 13,
+				zoom: 14,
 				//pitch:50,
 				viewMode:'3D',
 				layers:[
@@ -158,9 +162,6 @@ export default {
 </script>
 
 <style scoped>
-.crop {
-		position: absolute;
-}
 .map-contain {
 	display: flex;
 	justify-content: center;
@@ -168,8 +169,6 @@ export default {
 	height: 600px;
 }
 .map {
-	display: flex;
 	flex-grow:1;
-
 }
 </style>

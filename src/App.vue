@@ -1,35 +1,45 @@
 <template>
 	<div id="app">
-		<div id="nav">
-			<router-link to="/">Map</router-link>|
-			<router-link to="/chart">Chart</router-link>|
-			<router-link to="/about">About</router-link>
-		</div>
-		<keep-alive include="Map">
-			<router-view/>
-		</keep-alive>
+		<a-layout id="components-layout-demo-top" class="layout">
+			<a-layout-header>
+				<div class="logo" />
+				<a-menu
+					theme="dark"
+					mode="horizontal"
+					:default-selected-keys="['1']"
+					:style="{ lineHeight: '64px' }"
+				>
+					<a-menu-item key="1">
+						<router-link to="/">Map</router-link>
+					</a-menu-item>
+					<a-menu-item key="2">
+						<router-link to="/chart">Chart</router-link>
+					</a-menu-item>
+					<a-menu-item key="3">
+						<router-link to="/about">About</router-link>
+					</a-menu-item>
+				</a-menu>
+			</a-layout-header>
+			<a-layout-content style="padding: 0 50px">
+				<div :style="{ background: '#fff', padding: '24px', minHeight: '280px' , marginTop:'10px'}">
+					<keep-alive include="Map">
+						<router-view/>
+					</keep-alive>
+				</div>
+			</a-layout-content>
+			<a-layout-footer style="text-align: center">
+				Ant Design ©2018 Created by Ant UED
+			</a-layout-footer>
+		</a-layout>
 	</div>
 </template>
 
 <style>
-#app {
-	font-family: Avenir, Helvetica, Arial, sans-serif;
-	-webkit-font-smoothing: antialiased;
-	-moz-osx-font-smoothing: grayscale;
-	text-align: center;
-	color: #2c3e50;
-}
-
-#nav {
-	padding: 20px;
-}
-
-#nav a {
-	font-weight: bold;
-	color: #2c3e50;
-}
-
-#nav a.router-link-exact-active {
-	color: #42b983;
+#components-layout-demo-top .logo {
+	width: 120px;
+	height: 31px;
+	background: rgba(255, 255, 255, 0.2);
+	margin: 16px 24px 16px 0;
+	float: left;
 }
 </style>
