@@ -1,9 +1,7 @@
 <template>
 	<div class="map-contain">
-		<div class="map" id="map">
-			<h1>asdadsa</h1>
-			<a-input-search placeholder="input search text" style="width: 200px; margin-bottom:2px;" enter-button @search="onSearch" />
-		</div>
+		<div class="map" id="map"></div>
+		<a-input-search placeholder="input search text" style="width: 200px; margin-bottom:2px;" enter-button @search="onSearch" />
 	</div>
 </template>
 
@@ -38,9 +36,8 @@ export default {
 
 		},
 		threeDInit() {
-			this.buildingLayer = new AMap.Buildings({zIndex:130,merge:false,sort:false,zooms:[3,20]});
-			this.options = 
-			{
+			this.buildingLayer = new AMap.Buildings({zIndex:130,zooms:[1,20]});
+			this.options = {
 				hideWithoutStyle: true,
 				areas:[]
 			};
@@ -59,7 +56,7 @@ export default {
 				}
 			}
 
-			this.buildingLayer.setStyle(this.options);
+			this.buildingLayer.setStyle(this.options)
 			this.MapInit();
 
 		},
@@ -76,13 +73,10 @@ export default {
 				mapStyle: "amap://styles/175fa02b044d32dd9242f1349297fe50", 
 				resizeEnable: true,
 				zoom: 14,
+				zooms: [4,18],
 				//pitch:50,
 				viewMode:'3D',
-				layers:[
-					new AMap.TileLayer(),
-					this.buildingLayer
-				]
-				//center: [116.405467, 39.907761]
+				layers:[AMap.createDefaultLayer(), this.buildingLayer]
 			});
 			for (let i = 0; i < this.options.areas.length; i++) {
 				new AMap.Polygon({
@@ -93,19 +87,19 @@ export default {
 					map:this.map,
 				})			
 			}
-			this.markadd()
+			//this.markadd()
 
 		},
 		location() {
 			AMap.plugin('AMap.Geolocation', () => {
-				var geolocation = new AMap.Geolocation({
+				let geolocation = new AMap.Geolocation({
 					enableHighAccuracy: true,//是否使用高精度定位，默认:true
 					timeout: 10000,          //超过10秒后停止定位，默认：5s
 					buttonPosition:'RB',    //定位按钮的停靠位置
 					buttonOffset: new AMap.Pixel(10, 20),//定位按钮与设置的停靠位置的偏移量，默认：Pixel(10, 20)
-					zoomToAccuracy: false,   //定位成功后是否自动调整地图视野到定位点
-
+					zoomToAccuracy: true,   //定位成功后是否自动调整地图视野到定位点
 				});
+
 				this.map.addControl(geolocation);
 				geolocation.getCurrentPosition((status,result) => {
 					if(status=='complete'){
