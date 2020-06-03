@@ -28,7 +28,8 @@ export default {
 		return {
 			buildingLayer: null,
 			options: null,
-			map: null
+			map: null,
+			polygonCache: []
 		}
 	},
 	methods: {
@@ -36,16 +37,16 @@ export default {
 
 		},
 		threeDInit() {
-			this.buildingLayer = new AMap.Buildings({zIndex:130,zooms:[1,20]});
+			this.buildingLayer = new AMap.Buildings({zIndex:130,zooms:[16,20]});
 			this.options = {
-				hideWithoutStyle: true,
+				hideWithoutStyle: false,//是否隐藏其他的默认楼块
 				areas:[]
 			};
 			for (let spec of data) {
 				for (let specGaode of spec.gaodeInfo) {
 					let cachePath = {
-						color1: 'ff99ff00',
-						color2: 'ff999900',
+						color1: 'ffffff00',
+						color2: 'ffffcc00',
 						path: []
 					}
 					if (specGaode.hasOwnProperty('spec') && specGaode.spec.hasOwnProperty('shape')) {
@@ -76,19 +77,24 @@ export default {
 				zooms: [4,18],
 				//pitch:50,
 				viewMode:'3D',
-				layers:[AMap.createDefaultLayer(), this.buildingLayer]
+				layers:[AMap.createDefaultLayer(), this.buildingLayer]//
 			});
 			for (let i = 0; i < this.options.areas.length; i++) {
-				new AMap.Polygon({
+				let polygon = new AMap.Polygon({
 					bubble:true,
 					fillOpacity:0.1,
 					strokeWeight:1,
 					path:this.options.areas[i].path,
 					map:this.map,
-				})			
+				})	
+				this.polygonCache.push(polygon)	
 			}
+			this.map.add(this.polygonCache)
 			//this.markadd()
-
+		},
+		polygonHide () {
+			console.log("隐藏所有小区轮廓")
+			this.map.remove(this.polygonCache)
 		},
 		location() {
 			AMap.plugin('AMap.Geolocation', () => {
@@ -109,16 +115,17 @@ export default {
 					}
 				});
 			});
+			this.markadd()
 		},
 		onComplete(s){
-			console.log(s)
+			
 		},
 		onError(s){
-			console.log(s)
+			
 		},
 		circleAdd () {
 			var circle = new AMap.Circle({
-				center: new AMap.LngLat("116.405467", "39.907761"), // 圆心位置
+				center: new AMap.LngLat("114.28513", "30.653027"), // 圆心位置
 				radius: 1000,  //半径
 				strokeColor: "#F33",  //线颜色
 				strokeOpacity: 1,  //线透明度
@@ -139,7 +146,7 @@ export default {
 					'margin-bottom': '1rem',
 					'border-radius': '0.25rem',
 					'background-color': 'white',
-					'width': '4rem',
+					'width': '8rem',
 					'border-width': 0,
 					'box-shadow': '0 2px 6px 0 rgba(114, 124, 245, .5)',
 					'text-align': 'center',
@@ -150,6 +157,13 @@ export default {
 			});
 
 			text.setMap(this.map);
+		},
+		markadd2 () {
+			var infoWindow = new AMap.InfoWindow({
+				isCustom: true,  //使用自定义窗体
+				content: createInfoWindow(title, content.join("<br/>")),
+				offset: new AMap.Pixel(16, -45)
+			});
 		}
 	},
 }
