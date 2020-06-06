@@ -35,12 +35,17 @@ def generator():
         cache = []
         for id1 in idInfo:
             for spec in specInfo:
-                if id1["id"] == spec["id"]:
-                    chche2 = spec["data"]["data"]["spec"]
-                    if "mining_shape" in chche2:
-                        id1["spec"] = chche2["mining_shape"]
-                    else:
-                        id1["spec"] = {}
+                if "id" in spec:
+                    if id1["id"] == spec["id"]:
+                        cache9 = spec["data"]
+                        if "data" in cache9:
+                            cache8 = cache9["data"]
+                            if "spec" in cache8:
+                                chche2 = cache8["spec"]
+                                if "mining_shape" in chche2:
+                                    id1["spec"] = chche2["mining_shape"]
+                                else:
+                                    id1["spec"] = {}
 
             if "住宅" in id1["type"]:
                 if name["name"] in id1["name"].replace("·",""):                   

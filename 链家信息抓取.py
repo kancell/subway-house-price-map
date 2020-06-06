@@ -24,7 +24,7 @@ def getPage():
     pagenum = eval(soup.html.body.find(class_="page-box house-lst-page-box").attrs["page-data"])["totalPage"]
     print(pagenum)
     i = 1
-    pagenum = 2
+    pagenum = 44
     while(i <= pagenum):
         
         time.sleep(random.randint(1, 10))
@@ -39,7 +39,7 @@ def getPage():
         f.write(jstr)
 
 def getInfo(i):
-    url = "https://wh.lianjia.com/xiaoqu/su1pg"+ str(i) +"y4/"
+    url = "https://wh.lianjia.com/xiaoqu/su1pg"+ str(i) +"y4/" #近地铁二十年内楼龄
     print(url)
     r = requests.get(url)
         

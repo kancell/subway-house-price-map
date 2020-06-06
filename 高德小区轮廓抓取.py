@@ -72,17 +72,18 @@ def loadId():
     with open("./数据资源/高德信息.json",'r',encoding='utf8') as loadInfo:
         idInfo  = json.load(loadInfo)
         return idInfo
-
+saveUrl = "./数据资源/" + "小区轮廓信息" + ".json"
 def generator():
     info = loadId()
     for item in info:
-        if ("id" in item):
-            time.sleep(random.randint(1, 10))
-            getShape(item["id"])
-            print(item["id"])
-    jstr = json.dumps(allInfo, indent=4, sort_keys=True, ensure_ascii=False)
-    saveUrl = "./数据资源/" + "小区轮廓信息" + ".json"
-    with open(saveUrl, "w", encoding='utf8') as f:
-        f.write(jstr)
+        if ("住宅" in item["type"]):
+            if ("id" in item):
+                #time.sleep(random.randint(1, 10))
+                getShape(item["id"])
+                print(item["id"], item["name"])
+                jstr = json.dumps(allInfo, indent=4, sort_keys=True, ensure_ascii=False)
+                
+                with open(saveUrl, "w", encoding='utf8') as f:
+                    f.write(jstr)
 
 generator()            
