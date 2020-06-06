@@ -20,7 +20,7 @@
 					</a-menu-item>
 				</a-menu>
 			</a-layout-header>
-			<a-layout-content style="padding: 0 50px">
+			<a-layout-content style="padding: 0 15px">
 				<div :style="{ background: '#fff', padding: '24px', minHeight: '280px' , marginTop:'10px'}">
 					<keep-alive include="Map">
 						<router-view/>

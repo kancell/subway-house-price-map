@@ -1,7 +1,7 @@
 <template>
 	<div class="map-contain">
 		<div class="map" id="map"></div>
-		<a-input-search placeholder="input search text" style="width: 200px; margin-bottom:2px;" enter-button @search="onSearch" @/>
+		<a-input-search placeholder="输入要查询的地点" style="width: 200px; margin-bottom:2px;" enter-button @search="onSearch" />
 	</div>
 </template>
 
@@ -58,11 +58,26 @@ export default {
 		}
 	},
 	methods: {
-		onSearch(){
-
+		onSearch(value){
+			if (value == '' || value == null) return;
+			let geocoder = new AMap.Geocoder({
+				city: "027"
+			});		
+			let marker = new AMap.Marker();
+			geocoder.getLocation(value, (status, result) => {
+				if (status === 'complete' && result.geocodes.length) {
+					let lnglat = result.geocodes[0].location
+					marker.setPosition(lnglat);
+					//this.map.add(marker);
+					this.map.setFitView(marker);
+				}else{
+					console.log('根据地址查询位置失败');
+				}
+			});
+		
 		},
 		threeDInit() {
-			console.log(this.DataL)
+			//console.log(this.DataL)
 			this.buildingLayer = new AMap.Buildings({zIndex:130,zooms:[16,20]});
 			this.options = {
 				hideWithoutStyle: true,//是否隐藏其他的默认楼块
@@ -112,9 +127,20 @@ export default {
 			// 对此覆盖物群组设置同一属性
 			this.map.add(this.overlayGroup);
 			this.markadd()
-
+			this.map.getCity((info) => {
+				console.log(info)
+			});
+			//this.map.options.viewMode = '2d'
+			//console.log(this.map)
+			
 		},
-
+		bouundSet () {
+			//显示范围限制
+			var bounds = this.map.getBounds();
+			this.map.setLimitBounds(bounds);
+ 			let mybounds = new AMap.Bounds([116.319665, 39.855919], [116.468324,39.9756]);
+      		this.map.setBounds(mybounds);
+		},
 		location() {
 			AMap.plugin('AMap.Geolocation', () => {
 				let geolocation = new AMap.Geolocation({
@@ -159,7 +185,6 @@ export default {
 				zIndex: 1000,
 				allowCollision: true
 			});
-
 			let markers = [];
 			// 初始化 labelMarker
 			//这就是海量标记的性能吗，真是有够可笑的呢
@@ -212,7 +237,7 @@ export default {
 	display: flex;
 	justify-content: center;
 	flex-direction: column;
-	height: 769px;
+	height: 810px;
 }
 .map {
 	flex-grow:1;

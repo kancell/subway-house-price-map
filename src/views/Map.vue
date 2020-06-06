@@ -1,5 +1,5 @@
 <template>
-	<div>
+	<div class="map">
 		<MapInit v-bind:DataL="lianjiaData"/>
 	</div>
 </template>
@@ -62,3 +62,6 @@ export default {
 	}
 }
 </script>
+<style scoped>
+
+</style>
