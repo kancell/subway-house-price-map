@@ -15,14 +15,22 @@ export default {
 	props: {
 		DataL: Array
 	},
-	computed: {
-		
+	data() {
+		return {
+			buildingLayer: null, //小区轮廓图形
+			options: null, //楼快
+			map: null, //地图
+			gaodeOutline: null //信息标记
+		}
 	},
-	mounted () {
-		this.$nextTick(() => {
-			this.threeDInit()
-			this.location()		
+	watch: {//this与父级上下文绑定，在vue的watch和生命周期函数中，谨慎使用箭头函数
+		DataL: function() {
+			console.log('数据改变')
 
+			this.threeDInit()
+			this.MapInit()
+			this.location()		
+			this.markadd()
 			this.map.on('click', function(ev) {
 			// 触发事件的对象
 				var target = ev.target;		
@@ -34,31 +42,16 @@ export default {
 				var type = ev.type;
 				console.log(target)
 			});
-/*
-			this.map.on('zoomend', (ev) => {
-			// 触发事件的对象
-				let zoomCache = this.map.getZoom()
-
-			})
-			this.overlayGroup.on('mouseover', () => {
-				console.log(111)
-			})
-			this.overlayGroup.on('mouseout', () => {
-
-			})*/
-		})
-
-	},
-	data() {
-		return {
-			buildingLayer: null,
-			options: null,
-			map: null,
-			overlayGroup: null
 		}
 	},
+	computed: {
+		
+	},
+	mounted () {
+		this.$nextTick(() => {})
+	},
 	methods: {
-		onSearch(value){
+		onSearch (value) {
 			if (value == '' || value == null) return;
 			let geocoder = new AMap.Geocoder({
 				city: "027"
@@ -66,6 +59,7 @@ export default {
 			let marker = new AMap.Marker();
 			geocoder.getLocation(value, (status, result) => {
 				if (status === 'complete' && result.geocodes.length) {
+					console.log(result)
 					let lnglat = result.geocodes[0].location
 					marker.setPosition(lnglat);
 					//this.map.add(marker);
@@ -76,25 +70,30 @@ export default {
 			});
 		
 		},
-		threeDInit() {
-			//console.log(this.DataL)
+		colorSet (price) {
+			if (price < 10000) {return '#69a794'}
+			else if (price >= 10000 && price < 20000){return '#248067'}
+			else if (price >= 20000 && price < 30000){return '#b7d07a'}
+			else if (price >= 30000 && price < 40000){return 'bec936'}
+			else if (price >= 40000){return '#fcb70a'} 
+		},
+		threeDInit() {			
+			console.log(this.DataL)
 			this.buildingLayer = new AMap.Buildings({zIndex:130,zooms:[16,20]});
 			this.options = {
 				hideWithoutStyle: true,//是否隐藏其他的默认楼块
 				areas:[]
 			};
-			for (let spec of this.DataL) {
+			for (let [i, spec] of this.DataL.entries()) {
 				let cachePath = {
-					color1: 'ffffff00',
-					color2: 'ffffcc00',
+					color1: this.colorSet(this.DataL[i].price),
+					color2: this.colorSet(this.DataL[i].price),
 					path: []
 				}
 				cachePath.path = spec.path
 				this.options.areas.push(cachePath)			
 			}
 			this.buildingLayer.setStyle(this.options)
-			this.MapInit();
-
 		},
 		MapInit () {
 			this.map = new AMap.Map("map", {
@@ -106,13 +105,14 @@ export default {
 				viewMode:'3D',
 				layers:[AMap.createDefaultLayer(), this.buildingLayer]//spec
 			});
-			let polygonCache = []
-			
-			for (let i = 0; i < this.DataL.length; i++) {
-				
+
+			let polygonCache = []		
+			for (let i = 0; i < this.DataL.length; i++) {				
 				this.polygon = new AMap.Polygon({
 					bubble:true,
 					strokeWeight:1,
+					strokeColor: this.colorSet(this.DataL[i].price), // 线条颜色
+					fillColor: this.colorSet(this.DataL[i].price), // 多边形填充颜色
 					path:this.DataL[i].path,
 					//map:this.map,
 					zooms: [16, 20],
@@ -120,23 +120,16 @@ export default {
 					//怀疑覆盖物集合OverlayGroup只是个普通循环，没做性能优化
 				})	
 				polygonCache.push(this.polygon)	
-			}
-			
-			this.overlayGroup = new AMap.OverlayGroup(polygonCache);
+			}			
+			this.gaodeOutline = new AMap.OverlayGroup(polygonCache);
+			this.map.add(this.gaodeOutline);			// 对此覆盖物群组设置同一属性
 
-			// 对此覆盖物群组设置同一属性
-			this.map.add(this.overlayGroup);
-			this.markadd()
 			this.map.getCity((info) => {
-				console.log(info)
-			});
-			//this.map.options.viewMode = '2d'
-			//console.log(this.map)
-			
+				//console.log(info)
+			});	
 		},
-		bouundSet () {
-			//显示范围限制
-			var bounds = this.map.getBounds();
+		bouundSet () {		
+			var bounds = this.map.getBounds();//显示范围限制
 			this.map.setLimitBounds(bounds);
  			let mybounds = new AMap.Bounds([116.319665, 39.855919], [116.468324,39.9756]);
       		this.map.setBounds(mybounds);
@@ -158,27 +151,11 @@ export default {
 					}else{
 						this.onError(result)
 					}
-				});
-			});
+				})
+			})
 		},
-		onComplete(s){
-			
-		},
-		onError(s){
-			
-		},
-		circleAdd () {
-			var circle = new AMap.Circle({
-				center: new AMap.LngLat("114.28513", "30.653027"), // 圆心位置
-				radius: 1000,  //半径
-				strokeColor: "#F33",  //线颜色
-				strokeOpacity: 1,  //线透明度
-				strokeWeight: 3,  //线粗细度
-				fillColor: "#ee2200",  //填充颜色
-				fillOpacity: 0.35 //填充透明度
-			});
-			this.map.add(circle)
-		},
+		onComplete(s){},
+		onError(s){},
 		markadd () {
 			let layer = new AMap.LabelsLayer({
 				zooms: [9, 20],
@@ -220,15 +197,8 @@ export default {
 			}
 			layer.add(markers);
 			this.map.add(layer);
-		},
-		markadd2 () {
-			var infoWindow = new AMap.InfoWindow({
-				isCustom: true,  //使用自定义窗体
-				content: createInfoWindow(title, content.join("<br/>")),
-				offset: new AMap.Pixel(16, -45)
-			});
 		}
-	},
+	}
 }
 </script>
 
