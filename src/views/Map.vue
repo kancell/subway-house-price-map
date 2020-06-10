@@ -1,17 +1,17 @@
 <template>
 	<div class="map">
 		<MapInit v-bind:DataL="lianjiaData"/>
-		<a-select :default-value="cities[0]" style="width: 200px" v-model="cityName">
+		<a-select :default-value="cities[0]" style="width: 100px" v-model="cityName">
 			<a-select-option v-for="city in cities" :key="city.name">
 				{{ city.name }}
 			</a-select-option>
 		</a-select>
-		<a-select style="width: 200px" @change="getStreet" v-model="districtName">
+		<a-select style="width: 100px" @change="getStreet" v-model="districtName">
 			<a-select-option v-for="district in districts" :key="district.name">
 				{{ district.name }}
 			</a-select-option>
 		</a-select>
-		<a-select  style="width: 290px"  v-model="streetName ">
+		<a-select  style="width: 190px"  v-model="streetName ">
 			<a-select-option v-for="street in streets" :key="street.name">
 				{{ street.name }}
 			</a-select-option>

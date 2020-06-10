@@ -1,7 +1,7 @@
 <template>
 	<div class="map-contain">
+		<a-input-search placeholder="输入要查询的地点" style="width: 200px; margin-bottom:-40px; z-index: 20;" enter-button @search="onSearch" />
 		<div class="map" id="map"></div>
-		<a-input-search placeholder="输入要查询的地点" style="width: 200px; margin-bottom:2px;" enter-button @search="onSearch" />
 	</div>
 </template>
 
@@ -10,6 +10,8 @@ import AMap from "AMap"
 import { mapState } from 'vuex'
 import data from '@/assets/小区信息聚合.json'
 //还差，按视图小范围加载地图，降低性能压力
+//获取当前显示的范围，然后根据显示范围渲染标记
+//显示范围较大时显示点聚合
 export default {
 	name: 'MapInit',
 	props: {
@@ -20,17 +22,23 @@ export default {
 			buildingLayer: null, //小区轮廓图形
 			options: null, //楼快
 			map: null, //地图
-			gaodeOutline: null //信息标记
+			gaodeOutline: null, //信息标记
+			optical: null //视觉可视范围多边形框体
 		}
 	},
 	watch: {//this与父级上下文绑定，在vue的watch和生命周期函数中，谨慎使用箭头函数
 		DataL: function() {
-			console.log('数据改变')
-
+			if (this.gaodeOutline != undefined || this.gaodeOutline != null) {
+				console.log(this.gaodeOutline)
+				this.map.remove(this.gaodeOutline)	
+			}
+			//this.map && this.map.destroy();
+			console.log('数据改变,地图重新加载')
+			this.gaodeOutline = null
 			this.threeDInit()
 			this.MapInit()
-			this.location()		
-			this.markadd()
+			//this.location()		
+			//this.markadd()
 			this.map.on('click', function(ev) {
 			// 触发事件的对象
 				var target = ev.target;		
@@ -48,7 +56,58 @@ export default {
 		
 	},
 	mounted () {
-		this.$nextTick(() => {})
+		this.map = new AMap.Map("map", {
+			//mapStyle: 'amap://styles/whitesmoke', ///"amap://styles/175fa02b044d32dd9242f1349297fe50"
+			resizeEnable: true,
+			zoom: 18,
+			zooms: [4,18],
+			viewMode:'3D',
+			showLabel: false,
+			showIndoorMap: false,
+			layers:[AMap.createDefaultLayer()]//spec
+		});	
+		this.$nextTick(() => {
+			//this.markadd()
+		})
+		this.map.on('zoomchange', () => {
+			const bounds = this.map.getBounds();
+			const NorthEast = bounds.getNorthEast();
+			const SouthWest = bounds.getSouthWest();
+			const SouthEast = [NorthEast.lng, SouthWest.lat];
+			const NorthWest = [SouthWest.lng, NorthEast.lat];
+			this.path = [[NorthEast.lng, NorthEast.lat], SouthEast, [SouthWest.lng, SouthWest.lat], NorthWest]
+			//isRingInRing = AMap.GeometryUtil.isRingInRing(polygon2_path, path);
+			//console.log(this.path)
+			if (this.optical != null) {
+				this.map.remove(this.optical)
+			}
+
+			if (this.gaodeOutline != undefined || this.gaodeOutline != null) {
+				console.log(this.gaodeOutline)
+				this.map.remove(this.gaodeOutline)	
+			}
+			this.MapInit()
+		})
+		this.map.on('dragend', () => {
+			//console.log(this.map.getZoom())
+			const bounds = this.map.getBounds();
+			const NorthEast = bounds.getNorthEast();
+			const SouthWest = bounds.getSouthWest();
+			const SouthEast = [NorthEast.lng, SouthWest.lat];
+			const NorthWest = [SouthWest.lng, NorthEast.lat];
+			this.path = [[NorthEast.lng, NorthEast.lat], SouthEast, [SouthWest.lng, SouthWest.lat], NorthWest]
+			//isRingInRing = AMap.GeometryUtil.isRingInRing(polygon2_path, path);
+			//console.log(this.path)
+			if (this.optical != null) {
+				this.map.remove(this.optical)
+			}
+
+			if (this.gaodeOutline != undefined || this.gaodeOutline != null) {
+				console.log(this.gaodeOutline)
+				this.map.remove(this.gaodeOutline)	
+			}
+			this.MapInit()
+		})
 	},
 	methods: {
 		onSearch (value) {
@@ -71,15 +130,15 @@ export default {
 		
 		},
 		colorSet (price) {
-			if (price < 10000) {return '#69a794'}
-			else if (price >= 10000 && price < 20000){return '#248067'}
-			else if (price >= 20000 && price < 30000){return '#b7d07a'}
-			else if (price >= 30000 && price < 40000){return 'bec936'}
-			else if (price >= 40000){return '#fcb70a'} 
+			if (price < 10000) {return '#99CC33'}
+			else if (price >= 10000 && price < 20000){return '#FFCC00'}
+			else if (price >= 20000 && price < 30000){return '#FF9900'}
+			else if (price >= 30000 && price < 40000){return '#FF6666'}
+			else if (price >= 40000){return '#CC3333'} 
 		},
 		threeDInit() {			
 			console.log(this.DataL)
-			this.buildingLayer = new AMap.Buildings({zIndex:130,zooms:[16,20]});
+			this.buildingLayer = new AMap.Buildings({zIndex:130,zooms:[1,20]});
 			this.options = {
 				hideWithoutStyle: true,//是否隐藏其他的默认楼块
 				areas:[]
@@ -96,30 +155,27 @@ export default {
 			this.buildingLayer.setStyle(this.options)
 		},
 		MapInit () {
-			this.map = new AMap.Map("map", {
-				//mapStyle: "amap://styles/175fa02b044d32dd9242f1349297fe50", 
-				resizeEnable: true,
-				zoom: 14,
-				zooms: [4,18],
-				//pitch:50,
-				viewMode:'3D',
-				layers:[AMap.createDefaultLayer(), this.buildingLayer]//spec
-			});
+			
+			//this.map.add(this.buildingLayer)
 
 			let polygonCache = []		
-			for (let i = 0; i < this.DataL.length; i++) {				
-				this.polygon = new AMap.Polygon({
-					bubble:true,
-					strokeWeight:1,
-					strokeColor: this.colorSet(this.DataL[i].price), // 线条颜色
-					fillColor: this.colorSet(this.DataL[i].price), // 多边形填充颜色
-					path:this.DataL[i].path,
-					//map:this.map,
-					zooms: [16, 20],
-					//由于使用批量导入位置信息绘图，填充无法使用，apth绘图绘出了大量线条，但amap无法判断哪些是覆盖物里，哪些是覆盖物外，无法绘制填充颜色
-					//怀疑覆盖物集合OverlayGroup只是个普通循环，没做性能优化
-				})	
-				polygonCache.push(this.polygon)	
+			for (let i = 0; i < this.DataL.length; i++) {	
+				
+				let isRingInRing = AMap.GeometryUtil.isRingInRing(this.DataL[i].path, this.path)
+				if (isRingInRing) {
+					this.polygon = new AMap.Polygon({
+						bubble:true,
+						strokeWeight:1,
+						strokeColor: this.colorSet(this.DataL[i].price), // 线条颜色
+						fillColor: this.colorSet(this.DataL[i].price), // 多边形填充颜色
+						path:this.DataL[i].path,
+						//map:this.map,
+						zooms: [14, 20],
+						//由于使用批量导入位置信息绘图，填充无法使用，apth绘图绘出了大量线条，但amap无法判断哪些是覆盖物里，哪些是覆盖物外，无法绘制填充颜色
+						//怀疑覆盖物集合OverlayGroup只是个普通循环，没做性能优化
+					})						
+					polygonCache.push(this.polygon)	
+				}
 			}			
 			this.gaodeOutline = new AMap.OverlayGroup(polygonCache);
 			this.map.add(this.gaodeOutline);			// 对此覆盖物群组设置同一属性
@@ -157,8 +213,9 @@ export default {
 		onComplete(s){},
 		onError(s){},
 		markadd () {
-			let layer = new AMap.LabelsLayer({
-				zooms: [9, 20],
+			let layer = null
+			layer = new AMap.LabelsLayer({
+				zooms: [15, 20],
 				zIndex: 1000,
 				allowCollision: true
 			});
@@ -169,7 +226,7 @@ export default {
 				let data = {
 					name: this.DataL[i].id,
 					position: this.DataL[i].center,
-					zooms: [16, 20],
+					zooms: [14, 20],
 					opacity: 1,
 					zIndex: 16,
 					text: {
@@ -186,12 +243,6 @@ export default {
 						}
 					}
 				}
-				/*
-				let curData = data;
-				curData.extData = {
-					index: i
-				};
-				*/
 				let labelMarker = new AMap.LabelMarker(data);
 				markers.push(labelMarker);
 			}
@@ -207,7 +258,7 @@ export default {
 	display: flex;
 	justify-content: center;
 	flex-direction: column;
-	height: 810px;
+	height: 510px;
 }
 .map {
 	flex-grow:1;
