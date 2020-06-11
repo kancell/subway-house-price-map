@@ -19,26 +19,30 @@ export default {
 	},
 	data() {
 		return {
-			buildingLayer: null, //小区轮廓图形
+			buildingLayer: null, //小区楼梯色块图形
 			options: null, //楼快
 			map: null, //地图
-			gaodeOutline: null, //信息标记
-			optical: null //视觉可视范围多边形框体
+			gaodeOutline: null, //范围多边形
+			infoMarkers: null,
+			markLayer: null
 		}
 	},
 	watch: {//this与父级上下文绑定，在vue的watch和生命周期函数中，谨慎使用箭头函数
 		DataL: function() {
 			if (this.gaodeOutline != undefined || this.gaodeOutline != null) {
 				console.log(this.gaodeOutline)
-				this.map.remove(this.gaodeOutline)	
+				this.map.remove(this.gaodeOutline)
+				this.map.remove(this.buildingLayer)
+				this.map.remove(this.gaodeOutline)
 			}
 			//this.map && this.map.destroy();
 			console.log('数据改变,地图重新加载')
 			this.gaodeOutline = null
+
+			this.polygonInit()
 			this.threeDInit()
-			this.MapInit()
 			//this.location()		
-			//this.markadd()
+			this.markadd()
 			this.map.on('click', function(ev) {
 			// 触发事件的对象
 				var target = ev.target;		
@@ -55,7 +59,7 @@ export default {
 	computed: {
 		
 	},
-	mounted () {
+	mounted () {		
 		this.map = new AMap.Map("map", {
 			//mapStyle: 'amap://styles/whitesmoke', ///"amap://styles/175fa02b044d32dd9242f1349297fe50"
 			resizeEnable: true,
@@ -66,47 +70,40 @@ export default {
 			showIndoorMap: false,
 			layers:[AMap.createDefaultLayer()]//spec
 		});	
+		this.map.on('complete', ()=> {
+			this.opticalPathSet()
+			this.markLayer = new AMap.LabelsLayer({
+				zooms: [15, 20],
+				zIndex: 1000,
+				allowCollision: true
+			});
+			this.buildingLayer = new AMap.Buildings({zIndex:130, zooms:[1,20]});
+			this.map.add(this.markLayer);
+			//没有初始化gaodeOutline，轮廓图形，其他两个都是图层，多边形不是
+			this.map.add(this.buildingLayer)
+		})		
+
 		this.$nextTick(() => {
 			//this.markadd()
 		})
-		this.map.on('zoomchange', () => {
-			const bounds = this.map.getBounds();
-			const NorthEast = bounds.getNorthEast();
-			const SouthWest = bounds.getSouthWest();
-			const SouthEast = [NorthEast.lng, SouthWest.lat];
-			const NorthWest = [SouthWest.lng, NorthEast.lat];
-			this.path = [[NorthEast.lng, NorthEast.lat], SouthEast, [SouthWest.lng, SouthWest.lat], NorthWest]
-			//isRingInRing = AMap.GeometryUtil.isRingInRing(polygon2_path, path);
-			//console.log(this.path)
-			if (this.optical != null) {
-				this.map.remove(this.optical)
+		
+		this.map.on(['zoomchange', 'dragend'], () => {
+			let zoom = this.map.getZoom()
+			if (zoom < 17 && zoom > 14) {
+				this.opticalPathSet()
+				if (this.gaodeOutline != undefined || this.gaodeOutline != null) {
+					this.map.remove(this.gaodeOutline)
+					//地图移除多边形
+				}
+				if (this.infoMarkers != null) {
+					this.markLayer.remove(this.infoMarkers)
+					//标记图层移除信息标记
+				}
+				//楼快图层没什么好移除的
+				this.polygonInit()
+				this.threeDInit()
+				this.markadd()
 			}
-
-			if (this.gaodeOutline != undefined || this.gaodeOutline != null) {
-				console.log(this.gaodeOutline)
-				this.map.remove(this.gaodeOutline)	
-			}
-			this.MapInit()
-		})
-		this.map.on('dragend', () => {
-			//console.log(this.map.getZoom())
-			const bounds = this.map.getBounds();
-			const NorthEast = bounds.getNorthEast();
-			const SouthWest = bounds.getSouthWest();
-			const SouthEast = [NorthEast.lng, SouthWest.lat];
-			const NorthWest = [SouthWest.lng, NorthEast.lat];
-			this.path = [[NorthEast.lng, NorthEast.lat], SouthEast, [SouthWest.lng, SouthWest.lat], NorthWest]
-			//isRingInRing = AMap.GeometryUtil.isRingInRing(polygon2_path, path);
-			//console.log(this.path)
-			if (this.optical != null) {
-				this.map.remove(this.optical)
-			}
-
-			if (this.gaodeOutline != undefined || this.gaodeOutline != null) {
-				console.log(this.gaodeOutline)
-				this.map.remove(this.gaodeOutline)	
-			}
-			this.MapInit()
 		})
 	},
 	methods: {
@@ -136,9 +133,15 @@ export default {
 			else if (price >= 30000 && price < 40000){return '#FF6666'}
 			else if (price >= 40000){return '#CC3333'} 
 		},
-		threeDInit() {			
-			console.log(this.DataL)
-			this.buildingLayer = new AMap.Buildings({zIndex:130,zooms:[1,20]});
+		opticalPathSet () {
+			const bounds = this.map.getBounds();
+			const NorthEast = bounds.getNorthEast();
+			const SouthWest = bounds.getSouthWest();
+			const SouthEast = [NorthEast.lng, SouthWest.lat];
+			const NorthWest = [SouthWest.lng, NorthEast.lat];
+			this.path = [[NorthEast.lng, NorthEast.lat], SouthEast, [SouthWest.lng, SouthWest.lat], NorthWest]
+		},
+		threeDInit() {	
 			this.options = {
 				hideWithoutStyle: true,//是否隐藏其他的默认楼块
 				areas:[]
@@ -149,18 +152,18 @@ export default {
 					color2: this.colorSet(this.DataL[i].price),
 					path: []
 				}
-				cachePath.path = spec.path
-				this.options.areas.push(cachePath)			
+				let isRingInRing = AMap.GeometryUtil.isRingInRing(spec.path, this.path)
+				if (isRingInRing) {
+					cachePath.path = spec.path
+					this.options.areas.push(cachePath)			
+				}
 			}
 			this.buildingLayer.setStyle(this.options)
+			this.map.add(this.buildingLayer)
 		},
-		MapInit () {
-			
-			//this.map.add(this.buildingLayer)
-
+		polygonInit () {
 			let polygonCache = []		
-			for (let i = 0; i < this.DataL.length; i++) {	
-				
+			for (let i = 0; i < this.DataL.length; i++) {				
 				let isRingInRing = AMap.GeometryUtil.isRingInRing(this.DataL[i].path, this.path)
 				if (isRingInRing) {
 					this.polygon = new AMap.Polygon({
@@ -169,10 +172,7 @@ export default {
 						strokeColor: this.colorSet(this.DataL[i].price), // 线条颜色
 						fillColor: this.colorSet(this.DataL[i].price), // 多边形填充颜色
 						path:this.DataL[i].path,
-						//map:this.map,
 						zooms: [14, 20],
-						//由于使用批量导入位置信息绘图，填充无法使用，apth绘图绘出了大量线条，但amap无法判断哪些是覆盖物里，哪些是覆盖物外，无法绘制填充颜色
-						//怀疑覆盖物集合OverlayGroup只是个普通循环，没做性能优化
 					})						
 					polygonCache.push(this.polygon)	
 				}
@@ -213,41 +213,38 @@ export default {
 		onComplete(s){},
 		onError(s){},
 		markadd () {
-			let layer = null
-			layer = new AMap.LabelsLayer({
-				zooms: [15, 20],
-				zIndex: 1000,
-				allowCollision: true
-			});
-			let markers = [];
+					
+			this.infoMarkers = []
 			// 初始化 labelMarker
 			//这就是海量标记的性能吗，真是有够可笑的呢
 			for (let i = 0; i < this.DataL.length; i++) {
-				let data = {
-					name: this.DataL[i].id,
-					position: this.DataL[i].center,
-					zooms: [14, 20],
-					opacity: 1,
-					zIndex: 16,
-					text: {
-						content: this.DataL[i].name + '  均价：' + this.DataL[i].price,
-						direction: 'right',
-						offset: [-20, -5],
-						style: {
-							fontSize: 12,
-							fillColor: '#22886f',
-							strokeColor: '#fff',
-							strokeWidth: 2,
-							fold: true,
-							padding: '2, 5',
+				let isRingInRing = AMap.GeometryUtil.isRingInRing(this.DataL[i].path, this.path)
+				if (isRingInRing) {
+					let data = {
+						name: this.DataL[i].id,
+						position: this.DataL[i].center,
+						zooms: [14, 20],
+						opacity: 1,
+						zIndex: 16,
+						text: {
+							content: this.DataL[i].name + '  均价：' + this.DataL[i].price,
+							direction: 'right',
+							offset: [-20, -5],
+							style: {
+								fontSize: 12,
+								fillColor: '#22886f',
+								strokeColor: '#fff',
+								strokeWidth: 2,
+								fold: true,
+								padding: '2, 5',
+							}
 						}
 					}
+					let labelMarker = new AMap.LabelMarker(data);
+					this.infoMarkers.push(labelMarker);
 				}
-				let labelMarker = new AMap.LabelMarker(data);
-				markers.push(labelMarker);
 			}
-			layer.add(markers);
-			this.map.add(layer);
+			this.markLayer.add(this.infoMarkers);
 		}
 	}
 }
