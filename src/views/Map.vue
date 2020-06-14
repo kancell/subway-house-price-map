@@ -1,17 +1,22 @@
 <template>
 	<div class="map">
 		<MapInit v-bind:DataL="lianjiaData"/>
-		<a-select :default-value="cities[0]" style="width: 100px" v-model="cityName">
+		<a-select :default-value="cities[0]" style="width: 100px" v-model="provinceName" @focus="getProvince">
+			<a-select-option v-for="province in provinces" :key="province.name">
+				{{ province.name }}
+			</a-select-option>
+		</a-select>
+		<a-select :default-value="cities[0]" style="width: 100px" v-model="cityName" @focus="getCity">
 			<a-select-option v-for="city in cities" :key="city.name">
 				{{ city.name }}
 			</a-select-option>
 		</a-select>
-		<a-select style="width: 100px" @change="getStreet" v-model="districtName">
+		<a-select style="width: 100px" v-model="districtName" @focus="getDistrict">
 			<a-select-option v-for="district in districts" :key="district.name">
 				{{ district.name }}
 			</a-select-option>
 		</a-select>
-		<a-select  style="width: 190px"  v-model="streetName ">
+		<a-select  style="width: 190px"  v-model="streetName " @focus="getStreet">
 			<a-select-option v-for="street in streets" :key="street.name">
 				{{ street.name }}
 			</a-select-option>
@@ -30,9 +35,11 @@ export default {
 		return {
 			lianjiaData: [],
 			provinceData: [],
+			provinces: [],
 			cities: [],
 			districts :[],
 			streets: [],
+			provinceName: null,
 			cityName: null,
 			districtName: null,
 			streetName: null
@@ -48,28 +55,42 @@ export default {
 	},
 	methods: {
 		dataInit (areaKey, areaValue) {
-			this.lianjiaData = []
-			for (let spec of data) {
 
+			this.lianjiaData = []
+			for (let spec of data) {			
 				for (let specGaode of spec.gaodeInfo) {
-					let cachePath = {
-						path: null,
-						area: null,
-						center: null,
-						id: null,
-						name: null,
-						price: null,	
+					if (specGaode.hasOwnProperty('spec') && specGaode.spec.hasOwnProperty('shape')) {
+						let cachePath = {
+							path: null,
+							area: null,
+							center: null,
+							id: null,
+							name: null,
+							price: null,	
+						}
+						if (areaKey == 'city' && areaValue == '武汉') {
+							cachePath.path = this.shapeHandle(specGaode.spec.shape)
+							cachePath.area = specGaode.spec.area
+							cachePath.center = specGaode.spec.center
+							cachePath.id = specGaode.id
+							cachePath.name = specGaode.name
+							cachePath.price = spec.price
+							this.lianjiaData.push(cachePath)					
+						}
+						else if (spec[areaKey] == areaValue) {
+										
+							cachePath.path = this.shapeHandle(specGaode.spec.shape)
+							cachePath.area = specGaode.spec.area
+							cachePath.center = specGaode.spec.center
+							cachePath.id = specGaode.id
+							cachePath.name = specGaode.name
+							cachePath.price = spec.price
+							this.lianjiaData.push(cachePath)
+							
+						} 
 					}
-					if (spec[areaKey] == areaValue && specGaode.hasOwnProperty('spec') && specGaode.spec.hasOwnProperty('shape')) {
-						cachePath.path = this.shapeHandle(specGaode.spec.shape)
-						cachePath.area = specGaode.spec.area
-						cachePath.center = specGaode.spec.center
-						cachePath.id = specGaode.id
-						cachePath.name = specGaode.name
-						cachePath.price = spec.price
-						this.lianjiaData.push(cachePath)
-						
-					}					
+
+		
 				}
 			}
 						
@@ -88,40 +109,64 @@ export default {
 				showbiz:true  //最后一级返回街道信息
 			};
 			this.district = new AMap.DistrictSearch(opts);//注意：需要使用插件同步下发功能才能这样直接使用
-			this.getDistrict()
 		}, 
-		getDistrict (value) {
-			this.district.search('武汉', (status, result) => {
-				if(status == 'complete' && result.districtList[0]['level'] == 'city'){ //
-					for (let info of result.districtList) {
-						let c = {
-							adcode: info.adcode,
-							citycode: info.citycode,
-							level: info.level,
-							name: info.name,
-							center: info.center
-						}
-						this.cities.push(c)
-						if (info.hasOwnProperty('districtList')) {							
-							this.districts = info.districtList
-						}
-					}		
+		getProvince() {
+			this.district.search('中国', (status, result) => {
+				if(status=='complete'){
+					this.provinces = result.districtList[0].districtList
+					this.provinces.push({name: '----'})
+					this.cityName = null
+					this.districtName = null
+					this.streetName = null
+				}
+			});
+		},
+		getCity() {
+			if(this.provinceName == null) {
+				return
+			}
+			this.district.search(this.provinceName, (status, result) => {
+				if(status=='complete'){
+					this.cities = result.districtList[0].districtList
+					this.cities.push({name: '----'})
+					this.districtName = null
+					this.streetName = null
+				}
+			});
+		},
+		getDistrict () {
+			if(this.cityName == null) {
+				return
+			}
+			this.district.search(this.cityName, (status, result) => {
+				if(status == 'complete'){ //			
+					this.districts = result.districtList[0].districtList
+					this.districts.push({name: '----'})
+					this.streetName = null
 				}			
 			});
 		},
-		getStreet (value) {
-			this.streetName = []
-			this.district.search(value, (status, result) => {
+		getStreet () {
+			if(this.districtName == null) {
+				return
+			}
+			this.district.search(this.districtName, (status, result) => {
 				if(status == 'complete') {
 					this.streets = result.districtList[0].districtList
-				} //
+					this.streets.push({name: '----'})
+				} 
 			})
 		},
 		onSearch() {
-			if (this.streetName != '') {
+			
+			 if (this.streetName != null && this.streetName != '----') {
 				this.dataInit('detailArea', this.streetName)
-			} else if (this.districtName != '') {
+			} else if (this.districtName != null && this.districtName!= '----') {
 				this.dataInit('area', this.districtName.replace('区',''))
+			} else if (this.cityName != null && this.cityName!= '----' && this.cityName =='武汉市') {
+				this.dataInit('city', '武汉')
+			} else {
+				console.log("数据不足无可奉告")
 			}
 			//
 			//this.dataInit('area', '洪山区')
@@ -133,5 +178,7 @@ export default {
 }
 </script>
 <style scoped>
-
+.ant-select {
+	margin: 5px;
+}
 </style>
