@@ -1,20 +1,45 @@
-# vuepricemap
+## 房价热力地图
 
-## Project setup
+### 简介
+ - 绘制居民小区轮廓，根据价格为轮廓与小区楼块填充对应颜色，并在标签中补充小区类型、建成年份、价位与成交情况等信息
+
+### 运行平台
+ - PC网页端
+ - 移动端
+### 信息来源
+ - 小区轮廓信息：高德地图
+ - 小区类型、建成年份、价位与成交情况等：链家
+### 技术选型
+ - Vue2.0
+ - Vue-cli3.0
+ - Ant Design of Vue
+ - Python3.7.3
+### 运行
+本地运行
 ```
 npm install
-```
-
-### Compiles and hot-reloads for development
-```
 npm run serve
 ```
-
-### Compiles and minifies for production
+打包
 ```
 npm run build
 ```
-
-### 接下来需要处理的
+### 已实现的功能
+ - 数据采集
+    - 爬取链家近地铁小区数据
+    - 使用selenium绕过高德反爬获取cookie，携带cookie获取高德小区轮廓等信息
+ - 前端
+    - PC端布局
+    - 区域（省-市- 区-街道）选择器
+    - 小区轮廓多边形绘制与对应颜色填充
+    - 小区楼快对应颜色填充
+    - 小区信息标签绘制
+    - 性能优化
+        - 地图缩放防抖
+        - 获取屏幕显示范围，按需显示范围内小区
+        - 应用高德覆盖物群组OverlayGroup
+### 待实现的功能
 - 高德地图反爬处理
 - 数据存储位置由json改为mongodb数据库
+- 信息统计图表
+- 区范围内信息聚合
