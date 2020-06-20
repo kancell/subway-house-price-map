@@ -2,6 +2,9 @@ module.exports = {
     // ...
     chainWebpack: config => {
       config
+        .plugin('webpack-bundle-analyzer')
+        .use(require('webpack-bundle-analyzer').BundleAnalyzerPlugin)
+      config
         .plugin('html')
         .tap(args => {
           args[0].title= '房价热力地图'

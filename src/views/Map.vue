@@ -108,7 +108,8 @@ export default {
 				subdistrict: 1,   //返回下一级行政区
 				showbiz:true  //最后一级返回街道信息
 			};
-			this.district = new AMap.DistrictSearch(opts);//注意：需要使用插件同步下发功能才能这样直接使用
+			this.district = new AMap.DistrictSearch();//注意：需要使用插件同步下发功能才能这样直接使用
+			//this.district.setExtensions('all');
 		}, 
 		getProvince() {
 			this.district.search('中国', (status, result) => {
@@ -140,6 +141,7 @@ export default {
 			}
 			this.district.search(this.cityName, (status, result) => {
 				if(status == 'complete'){ //			
+				console.log(result)
 					this.districts = result.districtList[0].districtList
 					this.districts.push({name: '----'})
 					this.streetName = null

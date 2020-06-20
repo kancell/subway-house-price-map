@@ -1,6 +1,7 @@
 <template>
 	<div class="map-contain">
-		<a-input-search placeholder="输入要查询的地点" style="width: 200px; margin-bottom:-40px; margin-left:10px; z-index: 20;" enter-button @search="onSearch" />
+		<span class="s">当前缩放层级： {{this.nowZoom}}</span>
+		<a-input-search placeholder="输入要查询的地点" style="width: 200px; margin-bottom:-40px; margin-left:10px; z-index: 20;" enter-button @search="onSearch" />		
 		<div class="map" id="map"></div>
 	</div>
 </template>
@@ -20,6 +21,7 @@ export default {
 	data() {
 		return {
 			timer: null,
+			nowZoom: 14,
 			buildingLayer: null, //小区楼梯色块图形
 			options: null, //楼快
 			map: null, //地图
@@ -35,7 +37,7 @@ export default {
 	},
 	mounted () {		
 		this.map = new AMap.Map("map", {
-			mapStyle: 'amap://styles/dd4f0610aacc187692ed0e81e646a754', ///"amap://styles/175fa02b044d32dd9242f1349297fe50"
+			mapStyle: 'amap://styles/4e75e178601ab266f5a5ed3911b9190f', ///"amap://styles/175fa02b044d32dd9242f1349297fe50"
 			resizeEnable: true,
 			zoom: 14,
 			zooms: [4,18],
@@ -46,12 +48,15 @@ export default {
 		});	
 		this.map.on('complete', ()=> {
 			this.opticalPathSet()
+			this.diffSignSet()
 			this.markLayer = new AMap.LabelsLayer({
 				zooms: [15, 20],
 				zIndex: 1000,
-				//allowCollision: true
+				allowCollision: true,
+				collision: true,
+ 				animation: false,  
 			});
-			this.buildingLayer = new AMap.Buildings({zIndex:17, zooms:[1,20]});
+			this.buildingLayer = new AMap.Buildings({zIndex:17, zooms:[17,20]});
 			this.map.addLayer(this.markLayer);
 			//没有初始化gaodeOutline，轮廓图形，其他两个都是图层，多边形不是
 			this.map.addLayer(this.buildingLayer)
@@ -61,13 +66,12 @@ export default {
 			//this.markadd()
 		})
 		
-		this.map.on(['zoomchange', 'dragend'], () => {
+		this.map.on(['zoomchange', 'dragend','dragstart'], () => {
 			this.nowZoom = this.map.getZoom()
-			console.log("当前缩放层级：" + this.nowZoom)
 			if (this.timer != null) {
 				clearTimeout(this.timer)
 			}
-			this.timer = setTimeout(this.mapReSet, 500)
+			this.timer = setTimeout(this.mapReSet, 300)
 
 			
 
@@ -76,6 +80,7 @@ export default {
 	watch: {//this与父级上下文绑定，在vue的watch和生命周期函数中，谨慎使用箭头函数
 		DataL: function() {
 			this.opticalPathSet()
+			this.diffSignSet()
 			if (this.gaodeOutline != undefined || this.gaodeOutline != null) {
 				this.map.remove(this.gaodeOutline)
 				//地图移除多边形
@@ -105,23 +110,23 @@ export default {
 		}
 	},
 	methods: {
-		d() {
-console.log(11)
-		},
 		mapReSet() {
-			if (this.nowZoom >= 14 && this.opticalPathSet()) {
-				if (this.gaodeOutline != undefined || this.gaodeOutline != null) {
-					this.map.remove(this.gaodeOutline)
-					//地图移除多边形
+			if (this.nowZoom >= 14) {
+				this.opticalPathSet()
+				if (this.diffSignSet()) {
+					if (this.gaodeOutline != undefined || this.gaodeOutline != null) {
+						this.map.remove(this.gaodeOutline)
+						//地图移除多边形
+					}
+					if (this.infoMarkers != null) {
+						this.markLayer.remove(this.infoMarkers)
+						//标记图层移除信息标记
+					}
+					//楼快图层没什么好移除的,setStyle可以直接改楼快图层样式，但使用自定义楼快样式会造成重绘
+					this.polygonInit()			
+					this.markadd()
+					if (this.nowZoom > 17) {this.threeDInit()}
 				}
-				if (this.infoMarkers != null) {
-					this.markLayer.remove(this.infoMarkers)
-					//标记图层移除信息标记
-				}
-				//楼快图层没什么好移除的,setStyle可以直接改楼快图层样式，但使用自定义楼快样式会造成重绘
-				this.polygonInit()			
-				this.markadd()
-				if (this.nowZoom > 17) {this.threeDInit()}
 			}
 		},
 		onSearch (value) {
@@ -150,47 +155,32 @@ console.log(11)
 			else if (price >= 30000 && price < 40000){return '#FF6666'}
 			else if (price >= 40000){return '#CC3333'} 
 		},
-		overPath(arr) {
-			let c = []
-			for(let i = 0; i < arr.length; i++) {
-				c.push(arr[i].map((item)=> {
-					return item * 1.1
-				}))
-			}
-
-			return c
-			
-		},
-		opticalPathSet () {
-			let sign = true
+		opticalPathSet () {		
 			const bounds = this.map.getBounds();
 			const NorthEast = bounds.getNorthEast();
 			const SouthWest = bounds.getSouthWest();
 			const SouthEast = [NorthEast.lng, SouthWest.lat];
 			const NorthWest = [SouthWest.lng, NorthEast.lat];
 			let cache = [[NorthEast.lng, NorthEast.lat], SouthEast, [SouthWest.lng, SouthWest.lat], NorthWest]
-			if (this.nowZoom > 17) {
-				this.path = cache
-				//\this.path = this.overPath(cache)扩展经纬度算法有问题
-			} else {
-				this.path = cache
-			}
-
+			this.path = cache
+			
 			this.opticalData = []
 			for (let i = 0; i < this.DataL.length; i++) {				
-				if (AMap.GeometryUtil.isRingInRing(this.DataL[i].path, this.path)) {					
+				if (AMap.GeometryUtil.isRingInRing(this.DataL[i].path, this.path) || AMap.GeometryUtil.doesRingRingIntersect(this.DataL[i].path, this.path)) {					
 					this.opticalData.push(this.DataL[i])	
 				}
 			}
-
+		},
+		diffSignSet () {		
+			let diffSign = true
 			if (this.opticalData.length == 0 || (this.preOpticalData.length == this.opticalData.length && this.preOpticalData[0].id == this.opticalData[0].id)) {			
-				sign = false
+				diffSign = false
 			}
 			this.preOpticalData = this.opticalData
-			
-			return sign
+			return diffSign
 		},
 		threeDInit() {	
+			return//重绘实在成问题，体验太差 ,而且无法正常清除
 			this.options = {
 				hideWithoutStyle: true,//是否隐藏其他的默认楼块
 				areas:[]
@@ -261,29 +251,28 @@ console.log(11)
 			// 初始化 labelMarker
 			//这就是海量标记的性能吗，真是有够可笑的呢
 			for (let i = 0; i < this.opticalData.length; i++) {
-				let isRingInRing = AMap.GeometryUtil.isRingInRing(this.opticalData[i].path, this.path)
-					let data = {
-						name: this.opticalData[i].id,
-						position: this.opticalData[i].center,
-						zooms: [14, 20],
-						opacity: 1,
-						zIndex: 16,
-						text: {
-							content: this.opticalData[i].name + '  均价：' + this.opticalData[i].price,
-							direction: 'right',
-							offset: [-20, -5],
-							style: {
-								fontSize: 12,
-								fillColor: '#22886f',
-								strokeColor: '#fff',
-								strokeWidth: 2,
-								fold: true,
-								padding: '2, 5',
-							}
+				let data = {
+					name: this.opticalData[i].id,
+					position: this.opticalData[i].center,
+					zooms: [14, 20],
+					opacity: 1,
+					zIndex: 16,
+					text: {
+						content: this.opticalData[i].name + '  均价：' + this.opticalData[i].price,
+						direction: 'right',
+						offset: [-20, -5],
+						style: {
+							fontSize: 12,
+							fillColor: '#22886f',
+							strokeColor: '#fff',
+							strokeWidth: 2,
+							fold: true,
+							padding: '2, 5',
 						}
 					}
-					let labelMarker = new AMap.LabelMarker(data);
-					this.infoMarkers.push(labelMarker);				
+				}
+				let labelMarker = new AMap.LabelMarker(data);
+				this.infoMarkers.push(labelMarker);				
 			}
 			this.markLayer.add(this.infoMarkers);
 		}
@@ -299,6 +288,10 @@ console.log(11)
 	height: 710px;
 }
 .map {
+	flex-grow:150;
+}
+span {
+	display: flex;
 	flex-grow:1;
 }
 </style>
