@@ -37,7 +37,7 @@ export default {
 	},
 	mounted () {		
 		this.map = new AMap.Map("map", {
-			mapStyle: 'amap://styles/4e75e178601ab266f5a5ed3911b9190f', ///"amap://styles/175fa02b044d32dd9242f1349297fe50"
+			mapStyle: 'amap://styles/6eec46af7142edd70b942e416b8a76ac', ///"amap://styles/175fa02b044d32dd9242f1349297fe50"
 			resizeEnable: true,
 			zoom: 14,
 			zooms: [4,18],
@@ -91,8 +91,7 @@ export default {
 			}
 			console.log('数据改变,地图重新加载')
 
-			this.polygonInit()
-			
+			this.polygonInit()			
 			//this.location()		
 			this.markadd()
 			this.threeDInit()
@@ -166,12 +165,31 @@ export default {
 			
 			this.opticalData = []
 			for (let i = 0; i < this.DataL.length; i++) {				
-				if (AMap.GeometryUtil.isRingInRing(this.DataL[i].path, this.path) || AMap.GeometryUtil.doesRingRingIntersect(this.DataL[i].path, this.path)) {					
-					this.opticalData.push(this.DataL[i])	
+				if (AMap.GeometryUtil.isRingInRing(this.DataL[i].path, this.path) || AMap.GeometryUtil.doesRingRingIntersect(this.DataL[i].path, this.path)) {	
+					this.opticalData.push(this.DataL[i])
 				}
 			}
 		},
-		diffSignSet () {		
+		diffSignSet () {	
+			//需要进行检查，检出当前视觉范围内的数据，被移出视觉范围的数据，新加入视觉范围的数据	
+			//opticalData: 当前视觉范围内的数据
+			//this.preOpticalData对比this.opticalData
+			
+			let hash = {};
+			this.opticalData.forEach(element => {
+				hash[element.id] = ''
+			});
+			this.preOpticalData.forEach(element => {
+				if (hash.hasOwnProperty(element.id)) {
+					console.log(element)
+				}
+				
+			});
+			let removeData = []
+			let newAddData = []
+
+
+
 			let diffSign = true
 			if (this.opticalData.length == 0 || (this.preOpticalData.length == this.opticalData.length && this.preOpticalData[0].id == this.opticalData[0].id)) {			
 				diffSign = false
@@ -199,24 +217,25 @@ export default {
 		},
 		polygonInit () {
 			let polygonCache = []		
-			for (let i = 0; i < this.opticalData.length; i++) {				
+			for (let i = 0; i < this.opticalData.length; i++) {
 				this.polygon = new AMap.Polygon({
-					bubble:true,
-					strokeWeight:1,
 					strokeColor: this.colorSet(this.opticalData[i].price), // 线条颜色
 					fillColor: this.colorSet(this.opticalData[i].price), // 多边形填充颜色
-					path:this.opticalData[i].path,
-					zooms: [14, 20],
-				})						
+					path:this.opticalData[i].path
+				})	
 				polygonCache.push(this.polygon)					
 			}			
-			this.gaodeOutline = new AMap.OverlayGroup(polygonCache);
-			//console.log(this.gaodeOutline)
-			this.map.add(this.gaodeOutline);			// 对此覆盖物群组设置同一属性
 
-			this.map.getCity((info) => {
-				//console.log(info)
-			});	
+			this.gaodeOutline = new AMap.OverlayGroup(polygonCache);
+			this.gaodeOutline.setOptions({
+				name: 1,
+				bubble:true,
+				strokeWeight:1,
+			});
+			this.map.add(this.gaodeOutline);			// 对此覆盖物群组设置同一属性
+		},
+		polygonAdjust () {
+			console.log(this.gaodeOutline.getOverlays())
 		},
 		bouundSet () {		
 			var bounds = this.map.getBounds();//显示范围限制
@@ -251,7 +270,7 @@ export default {
 			// 初始化 labelMarker
 			//这就是海量标记的性能吗，真是有够可笑的呢
 			for (let i = 0; i < this.opticalData.length; i++) {
-				let data = {
+				let labelMarker = new AMap.LabelMarker({
 					name: this.opticalData[i].id,
 					position: this.opticalData[i].center,
 					zooms: [14, 20],
@@ -270,8 +289,7 @@ export default {
 							padding: '2, 5',
 						}
 					}
-				}
-				let labelMarker = new AMap.LabelMarker(data);
+				});
 				this.infoMarkers.push(labelMarker);				
 			}
 			this.markLayer.add(this.infoMarkers);

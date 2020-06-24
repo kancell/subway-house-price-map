@@ -57,6 +57,8 @@ export default {
 		dataInit (areaKey, areaValue) {
 
 			this.lianjiaData = []
+
+
 			for (let spec of data) {			
 				for (let specGaode of spec.gaodeInfo) {
 					if (specGaode.hasOwnProperty('spec') && specGaode.spec.hasOwnProperty('shape')) {
@@ -93,7 +95,15 @@ export default {
 		
 				}
 			}
-						
+			this.processed()		
+		},
+		processed () {
+			//去重
+			let hash = {}
+			this.lianjiaData = this.lianjiaData.reduce((item, next) => { 
+				hash[next.name] ? '' : hash[next.name] = true && item.push(next)
+				return item 
+			}, [])
 		},
 		shapeHandle (shape) {
 			let cache1 = shape.split(';')
@@ -141,7 +151,6 @@ export default {
 			}
 			this.district.search(this.cityName, (status, result) => {
 				if(status == 'complete'){ //			
-				console.log(result)
 					this.districts = result.districtList[0].districtList
 					this.districts.push({name: '----'})
 					this.streetName = null
