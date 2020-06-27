@@ -67,10 +67,6 @@ export default {
 			
 		})		
 
-		this.$nextTick(() => {
-			//this.markadd()
-		})
-		
 		this.map.on(['zoomchange', 'dragend'], () => {//,'dragstart'
 			this.nowZoom = this.map.getZoom()
 			if (this.timer != null) {
@@ -203,29 +199,28 @@ export default {
 			this.buildingLayer.setStyle(this.options)
 		},
 		polygonInit () {
-		
-			let polygonCache2 = []		
+			//重复渲染的原因，清除时没有正确清除
+			let polygonCache2 = []	
 			for (let i = 0; i < this.newAddData.length; i++) {
 				let polygon = new AMap.Polygon({
 					strokeColor: this.colorSet(this.newAddData[i].price), // 线条颜色
 					fillColor: this.colorSet(this.newAddData[i].price), // 多边形填充颜色
-					path:this.newAddData[i].path
+					path:this.newAddData[i].path,
 				})	
-				polygonCache2.push(polygon)					
+				polygonCache2.push(polygon)							
 			}			
 			this.gaodeOutline.addOverlays(polygonCache2)
-					
-
+			let removeCache = []
 			this.gaodeOutline.eachOverlay((overlay, index, collections) => {
-				if (overlay != undefined) {
-					let ca = overlay.getPath()
-					if (AMap.GeometryUtil.isRingInRing(ca, this.path) || AMap.GeometryUtil.doesRingRingIntersect(ca, this.path)) {	
-						
-					} else {
-						this.gaodeOutline.removeOverlay(overlay)
-					}
+				let ca = overlay.getPath()
+				if (AMap.GeometryUtil.isRingInRing(ca, this.path) || AMap.GeometryUtil.doesRingRingIntersect(ca, this.path)) {	
+					
+				} else {
+					removeCache.push(overlay)
+					
 				}
 			})				// 对此覆盖物群组设置同一属性
+			this.gaodeOutline.removeOverlays(removeCache)//遍历删除单个多边形有问题，删不干净
 			this.gaodeOutline.setOptions({
 				strokeWeight:1,
 			});
