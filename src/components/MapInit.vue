@@ -56,17 +56,22 @@ export default {
 				collision: true,
  				animation: false,  
 			});
-			this.buildingLayer = new AMap.Buildings({zIndex:17, zooms:[17,20]});
 			this.map.addLayer(this.markLayer);
-			//没有初始化gaodeOutline，轮廓图形，其他两个都是图层，多边形不是
+
+			this.buildingLayer = new AMap.Buildings({zIndex:17, zooms:[17,20]});
 			this.map.addLayer(this.buildingLayer)
+
+			this.gaodeOutline = new AMap.OverlayGroup();
+			this.map.add(this.gaodeOutline);
+			this.polygonInit()
+			
 		})		
 
 		this.$nextTick(() => {
 			//this.markadd()
 		})
 		
-		this.map.on(['zoomchange', 'dragend','dragstart'], () => {
+		this.map.on(['zoomchange', 'dragend'], () => {//,'dragstart'
 			this.nowZoom = this.map.getZoom()
 			if (this.timer != null) {
 				clearTimeout(this.timer)
@@ -79,52 +84,39 @@ export default {
 	},
 	watch: {//this与父级上下文绑定，在vue的watch和生命周期函数中，谨慎使用箭头函数
 		DataL: function() {
-			this.opticalPathSet()
-			this.diffSignSet()
-			if (this.gaodeOutline != undefined || this.gaodeOutline != null) {
-				this.map.remove(this.gaodeOutline)
-				//地图移除多边形
-			}
 			if (this.infoMarkers != null) {
 				this.markLayer.remove(this.infoMarkers)
 				//标记图层移除信息标记
 			}
+			if (this.gaodeOutline != undefined || this.gaodeOutline != null) {
+				this.gaodeOutline.clearOverlays()
+				//地图移除多边形
+			}
+			this.preOpticalData = []
+			this.opticalPathSet()
+			this.diffSignSet()
+
 			console.log('数据改变,地图重新加载')
 
 			this.polygonInit()			
 			//this.location()		
 			this.markadd()
 			this.threeDInit()
-			this.map.on('click', function(ev) {
-			// 触发事件的对象
-				var target = ev.target;		
-				// 触发事件的地理坐标，AMap.LngLat 类型
-				var lnglat = ev.lnglat;			
-				// 触发事件的像素坐标，AMap.Pixel 类型
-				var pixel = ev.pixel;			
-				// 触发事件类型
-				var type = ev.type;
-				console.log(target)
-			});
 		}
 	},
 	methods: {
 		mapReSet() {
-			if (this.nowZoom >= 14) {
+			if (this.nowZoom) {
 				this.opticalPathSet()
 				if (this.diffSignSet()) {
-					if (this.gaodeOutline != undefined || this.gaodeOutline != null) {
-						this.map.remove(this.gaodeOutline)
-						//地图移除多边形
-					}
 					if (this.infoMarkers != null) {
 						this.markLayer.remove(this.infoMarkers)
 						//标记图层移除信息标记
 					}
 					//楼快图层没什么好移除的,setStyle可以直接改楼快图层样式，但使用自定义楼快样式会造成重绘
-					this.polygonInit()			
+					this.polygonInit()
 					this.markadd()
-					if (this.nowZoom > 17) {this.threeDInit()}
+					this.threeDInit()
 				}
 			}
 		},
@@ -174,21 +166,16 @@ export default {
 			//需要进行检查，检出当前视觉范围内的数据，被移出视觉范围的数据，新加入视觉范围的数据	
 			//opticalData: 当前视觉范围内的数据
 			//this.preOpticalData对比this.opticalData
-			
-			let hash = {};
-			this.opticalData.forEach(element => {
-				hash[element.id] = ''
-			});
+			this.newAddData = []
+			let hash2 = {}
 			this.preOpticalData.forEach(element => {
-				if (hash.hasOwnProperty(element.id)) {
-					console.log(element)
-				}
-				
-			});
-			let removeData = []
-			let newAddData = []
-
-
+				hash2[element.id] = ''
+			})
+			this.opticalData.forEach(element => {
+				if (!hash2.hasOwnProperty(element.id)) {
+					this.newAddData.push(element)
+				}	
+			})
 
 			let diffSign = true
 			if (this.opticalData.length == 0 || (this.preOpticalData.length == this.opticalData.length && this.preOpticalData[0].id == this.opticalData[0].id)) {			
@@ -216,23 +203,32 @@ export default {
 			this.buildingLayer.setStyle(this.options)
 		},
 		polygonInit () {
-			let polygonCache = []		
-			for (let i = 0; i < this.opticalData.length; i++) {
-				this.polygon = new AMap.Polygon({
-					strokeColor: this.colorSet(this.opticalData[i].price), // 线条颜色
-					fillColor: this.colorSet(this.opticalData[i].price), // 多边形填充颜色
-					path:this.opticalData[i].path
+		
+			let polygonCache2 = []		
+			for (let i = 0; i < this.newAddData.length; i++) {
+				let polygon = new AMap.Polygon({
+					strokeColor: this.colorSet(this.newAddData[i].price), // 线条颜色
+					fillColor: this.colorSet(this.newAddData[i].price), // 多边形填充颜色
+					path:this.newAddData[i].path
 				})	
-				polygonCache.push(this.polygon)					
+				polygonCache2.push(polygon)					
 			}			
+			this.gaodeOutline.addOverlays(polygonCache2)
+					
 
-			this.gaodeOutline = new AMap.OverlayGroup(polygonCache);
+			this.gaodeOutline.eachOverlay((overlay, index, collections) => {
+				if (overlay != undefined) {
+					let ca = overlay.getPath()
+					if (AMap.GeometryUtil.isRingInRing(ca, this.path) || AMap.GeometryUtil.doesRingRingIntersect(ca, this.path)) {	
+						
+					} else {
+						this.gaodeOutline.removeOverlay(overlay)
+					}
+				}
+			})				// 对此覆盖物群组设置同一属性
 			this.gaodeOutline.setOptions({
-				name: 1,
-				bubble:true,
 				strokeWeight:1,
 			});
-			this.map.add(this.gaodeOutline);			// 对此覆盖物群组设置同一属性
 		},
 		polygonAdjust () {
 			console.log(this.gaodeOutline.getOverlays())
