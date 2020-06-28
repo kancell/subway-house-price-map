@@ -26,7 +26,6 @@ export default {
 			options: null, //楼快
 			map: null, //地图
 			gaodeOutline: null, //范围多边形
-			infoMarkers: null,
 			markLayer: null,
 			opticalData: null,
 			preOpticalData: []
@@ -53,14 +52,15 @@ export default {
 				zooms: [15, 20],
 				zIndex: 1000,
 				allowCollision: true,
-				collision: true,
+				collision: false,
  				animation: false,  
 			});
 			this.map.addLayer(this.markLayer);
+			this.markAdd()
 
 			this.buildingLayer = new AMap.Buildings({zIndex:17, zooms:[17,20]});
 			this.map.addLayer(this.buildingLayer)
-
+			
 			this.gaodeOutline = new AMap.OverlayGroup();
 			this.map.add(this.gaodeOutline);
 			this.polygonInit()
@@ -73,15 +73,12 @@ export default {
 				clearTimeout(this.timer)
 			}
 			this.timer = setTimeout(this.mapReSet, 300)
-
-			
-
 		})
 	},
 	watch: {//this与父级上下文绑定，在vue的watch和生命周期函数中，谨慎使用箭头函数
 		DataL: function() {
-			if (this.infoMarkers != null) {
-				this.markLayer.remove(this.infoMarkers)
+			if (this.markLayer != null) {
+				this.markLayer.clear()
 				//标记图层移除信息标记
 			}
 			if (this.gaodeOutline != undefined || this.gaodeOutline != null) {
@@ -96,7 +93,7 @@ export default {
 
 			this.polygonInit()			
 			//this.location()		
-			this.markadd()
+			this.markAdd()
 			this.threeDInit()
 		}
 	},
@@ -105,13 +102,9 @@ export default {
 			if (this.nowZoom) {
 				this.opticalPathSet()
 				if (this.diffSignSet()) {
-					if (this.infoMarkers != null) {
-						this.markLayer.remove(this.infoMarkers)
-						//标记图层移除信息标记
-					}
 					//楼快图层没什么好移除的,setStyle可以直接改楼快图层样式，但使用自定义楼快样式会造成重绘
 					this.polygonInit()
-					this.markadd()
+					this.markAdd()
 					this.threeDInit()
 				}
 			}
@@ -152,8 +145,8 @@ export default {
 			this.path = cache
 			
 			this.opticalData = []
-			for (let i = 0; i < this.DataL.length; i++) {				
-				if (AMap.GeometryUtil.isRingInRing(this.DataL[i].path, this.path) || AMap.GeometryUtil.doesRingRingIntersect(this.DataL[i].path, this.path)) {	
+			for (let i = 0; i < this.DataL.length; i++) {			
+				if (AMap.GeometryUtil.isPointInRing(this.DataL[i].center, this.path) || AMap.GeometryUtil.isRingInRing(this.DataL[i].path, this.path) || AMap.GeometryUtil.doesRingRingIntersect(this.DataL[i].path, this.path)) {	
 					this.opticalData.push(this.DataL[i])
 				}
 			}
@@ -163,12 +156,12 @@ export default {
 			//opticalData: 当前视觉范围内的数据
 			//this.preOpticalData对比this.opticalData
 			this.newAddData = []
-			let hash2 = {}
+			let diffHash = {}
 			this.preOpticalData.forEach(element => {
-				hash2[element.id] = ''
+				diffHash[element.id] = ''
 			})
 			this.opticalData.forEach(element => {
-				if (!hash2.hasOwnProperty(element.id)) {
+				if (!diffHash.hasOwnProperty(element.id)) {
 					this.newAddData.push(element)
 				}	
 			})
@@ -199,17 +192,6 @@ export default {
 			this.buildingLayer.setStyle(this.options)
 		},
 		polygonInit () {
-			//重复渲染的原因，清除时没有正确清除
-			let polygonCache2 = []	
-			for (let i = 0; i < this.newAddData.length; i++) {
-				let polygon = new AMap.Polygon({
-					strokeColor: this.colorSet(this.newAddData[i].price), // 线条颜色
-					fillColor: this.colorSet(this.newAddData[i].price), // 多边形填充颜色
-					path:this.newAddData[i].path,
-				})	
-				polygonCache2.push(polygon)							
-			}			
-			this.gaodeOutline.addOverlays(polygonCache2)
 			let removeCache = []
 			this.gaodeOutline.eachOverlay((overlay, index, collections) => {
 				let ca = overlay.getPath()
@@ -217,13 +199,65 @@ export default {
 					
 				} else {
 					removeCache.push(overlay)
-					
 				}
-			})				// 对此覆盖物群组设置同一属性
+			})				
 			this.gaodeOutline.removeOverlays(removeCache)//遍历删除单个多边形有问题，删不干净
+
+			let polygonCache = []	
+			for (let i = 0; i < this.newAddData.length; i++) {
+				let polygon = new AMap.Polygon({
+					strokeColor: this.colorSet(this.newAddData[i].price), // 线条颜色
+					fillColor: this.colorSet(this.newAddData[i].price), // 多边形填充颜色
+					path:this.newAddData[i].path,
+				})	
+				polygonCache.push(polygon)							
+			}			
+			this.gaodeOutline.addOverlays(polygonCache)
 			this.gaodeOutline.setOptions({
 				strokeWeight:1,
 			});
+		},
+		markAdd () {
+			// 由于点对多边形关系的判定，存在部分可能下，点被判断移出可视区域删除后，重新进入可视区域无法重新加载
+			// 多边形可视判断，全包含与部分包含可视，点标记可视判断，全包含可视
+			//这就是海量标记的性能吗，真是有够可笑的呢
+			let removeCache = []
+			this.markLayer.getAllOverlays().forEach((marker, index, collections) => {
+				let ca = marker.getPosition()
+				if (AMap.GeometryUtil.isPointInRing(ca, this.path)) {	
+					
+				} else {
+					removeCache.push(marker)		
+				}
+			})
+			//console.log(removeCache)
+			this.markLayer.remove(removeCache)
+			
+			let infoMarkers = []
+			for (let i = 0; i < this.newAddData.length; i++) {
+				let labelMarker = new AMap.LabelMarker({
+					name: this.newAddData[i].id,
+					position: this.newAddData[i].center,
+					zooms: [14, 20],
+					opacity: 1,
+					zIndex: 16,
+					text: {
+						content: this.newAddData[i].name + '  均价：' + this.newAddData[i].price,
+						direction: 'right',
+						offset: [-20, -5],
+						style: {
+							fontSize: 12,
+							fillColor: '#22886f',
+							strokeColor: '#fff',
+							strokeWidth: 2,
+							fold: true,
+							padding: '2, 5',
+						}
+					}
+				});
+				infoMarkers.push(labelMarker)	
+			}
+			this.markLayer.add(infoMarkers)
 		},
 		polygonAdjust () {
 			console.log(this.gaodeOutline.getOverlays())
@@ -255,36 +289,7 @@ export default {
 			})
 		},
 		onComplete(s){},
-		onError(s){},
-		markadd () {
-			this.infoMarkers = []
-			// 初始化 labelMarker
-			//这就是海量标记的性能吗，真是有够可笑的呢
-			for (let i = 0; i < this.opticalData.length; i++) {
-				let labelMarker = new AMap.LabelMarker({
-					name: this.opticalData[i].id,
-					position: this.opticalData[i].center,
-					zooms: [14, 20],
-					opacity: 1,
-					zIndex: 16,
-					text: {
-						content: this.opticalData[i].name + '  均价：' + this.opticalData[i].price,
-						direction: 'right',
-						offset: [-20, -5],
-						style: {
-							fontSize: 12,
-							fillColor: '#22886f',
-							strokeColor: '#fff',
-							strokeWidth: 2,
-							fold: true,
-							padding: '2, 5',
-						}
-					}
-				});
-				this.infoMarkers.push(labelMarker);				
-			}
-			this.markLayer.add(this.infoMarkers);
-		}
+		onError(s){}
 	}
 }
 </script>
