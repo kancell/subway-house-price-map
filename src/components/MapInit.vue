@@ -12,6 +12,7 @@ import { mapState } from 'vuex'
 import data from '@/assets/小区信息聚合.json'
 //还差，按视图小范围加载地图，降低性能压力
 //获取当前显示的范围，然后根据显示范围渲染标记
+//当前情况，新增标记有newAddData提供，删除判断由图层自身进行处理
 //显示范围较大时显示点聚合
 export default {
 	name: 'MapInit',
@@ -48,6 +49,11 @@ export default {
 		this.map.on('complete', ()=> {
 			this.opticalPathSet()
 			this.diffSignSet()
+			
+			this.gaodeOutline = new AMap.OverlayGroup();
+			this.map.add(this.gaodeOutline);
+			this.polygonInit()
+
 			this.markLayer = new AMap.LabelsLayer({
 				zooms: [15, 20],
 				zIndex: 1000,
@@ -60,11 +66,8 @@ export default {
 
 			this.buildingLayer = new AMap.Buildings({zIndex:17, zooms:[17,20]});
 			this.map.addLayer(this.buildingLayer)
-			
-			this.gaodeOutline = new AMap.OverlayGroup();
-			this.map.add(this.gaodeOutline);
-			this.polygonInit()
-			
+
+			//this.location()
 		})		
 
 		this.map.on(['zoomchange', 'dragend'], () => {//,'dragstart'
@@ -91,10 +94,10 @@ export default {
 
 			console.log('数据改变,地图重新加载')
 
-			this.polygonInit()			
-			//this.location()		
+			this.polygonInit()					
 			this.markAdd()
 			this.threeDInit()
+			//this.location()
 		}
 	},
 	methods: {
@@ -151,7 +154,7 @@ export default {
 				}
 			}
 		},
-		diffSignSet () {	
+		diffSignSet () {
 			//需要进行检查，检出当前视觉范围内的数据，被移出视觉范围的数据，新加入视觉范围的数据	
 			//opticalData: 当前视觉范围内的数据
 			//this.preOpticalData对比this.opticalData
@@ -163,6 +166,17 @@ export default {
 			this.opticalData.forEach(element => {
 				if (!diffHash.hasOwnProperty(element.id)) {
 					this.newAddData.push(element)
+				}	
+			})
+
+			this.deleteData = {}
+			let deleteHash = {}
+			this.opticalData.forEach(element => {
+				deleteHash[element.id] = ''
+			})
+			this.preOpticalData.forEach(element => {
+				if (!deleteHash.hasOwnProperty(element.id)) {
+					this.deleteData[element.id] = ''
 				}	
 			})
 
@@ -192,15 +206,14 @@ export default {
 			this.buildingLayer.setStyle(this.options)
 		},
 		polygonInit () {
+			
 			let removeCache = []
 			this.gaodeOutline.eachOverlay((overlay, index, collections) => {
-				let ca = overlay.getPath()
-				if (AMap.GeometryUtil.isRingInRing(ca, this.path) || AMap.GeometryUtil.doesRingRingIntersect(ca, this.path)) {	
-					
-				} else {
+				if (this.deleteData.hasOwnProperty(overlay.getExtData().id)) {
 					removeCache.push(overlay)
 				}
-			})				
+			})	
+			
 			this.gaodeOutline.removeOverlays(removeCache)//遍历删除单个多边形有问题，删不干净
 
 			let polygonCache = []	
@@ -209,30 +222,26 @@ export default {
 					strokeColor: this.colorSet(this.newAddData[i].price), // 线条颜色
 					fillColor: this.colorSet(this.newAddData[i].price), // 多边形填充颜色
 					path:this.newAddData[i].path,
+					extData: {id: this.newAddData[i].id}
 				})	
 				polygonCache.push(polygon)							
 			}			
 			this.gaodeOutline.addOverlays(polygonCache)
 			this.gaodeOutline.setOptions({
 				strokeWeight:1,
+				strokeColor: "#000"
 			});
 		},
 		markAdd () {
-			// 由于点对多边形关系的判定，存在部分可能下，点被判断移出可视区域删除后，重新进入可视区域无法重新加载
-			// 多边形可视判断，全包含与部分包含可视，点标记可视判断，全包含可视
 			//这就是海量标记的性能吗，真是有够可笑的呢
 			let removeCache = []
 			this.markLayer.getAllOverlays().forEach((marker, index, collections) => {
-				let ca = marker.getPosition()
-				if (AMap.GeometryUtil.isPointInRing(ca, this.path)) {	
-					
-				} else {
-					removeCache.push(marker)		
+				if (this.deleteData.hasOwnProperty(marker.getExtData().id)) {
+					removeCache.push(marker)
 				}
 			})
-			//console.log(removeCache)
 			this.markLayer.remove(removeCache)
-			
+
 			let infoMarkers = []
 			for (let i = 0; i < this.newAddData.length; i++) {
 				let labelMarker = new AMap.LabelMarker({
@@ -253,20 +262,12 @@ export default {
 							fold: true,
 							padding: '2, 5',
 						}
-					}
+					},
+					extData: {id: this.newAddData[i].id}
 				});
 				infoMarkers.push(labelMarker)	
 			}
 			this.markLayer.add(infoMarkers)
-		},
-		polygonAdjust () {
-			console.log(this.gaodeOutline.getOverlays())
-		},
-		bouundSet () {		
-			var bounds = this.map.getBounds();//显示范围限制
-			this.map.setLimitBounds(bounds);
- 			let mybounds = new AMap.Bounds([116.319665, 39.855919], [116.468324,39.9756]);
-      		this.map.setBounds(mybounds);
 		},
 		location() {
 			AMap.plugin('AMap.Geolocation', () => {
