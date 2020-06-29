@@ -58,7 +58,7 @@ export default {
 				zooms: [15, 20],
 				zIndex: 1000,
 				allowCollision: true,
-				collision: false,
+				collision: true,
  				animation: false,  
 			});
 			this.map.addLayer(this.markLayer);
@@ -102,10 +102,14 @@ export default {
 	},
 	methods: {
 		mapReSet() {
-			if (this.nowZoom) {
+			if (this.nowZoom < 14) {
+				this.gaodeOutline == null ? '' : this.gaodeOutline.hide()
+			}
+			else if(this.nowZoom >= 14) {
+				this.gaodeOutline == null ? '' : this.gaodeOutline.show()
 				this.opticalPathSet()
 				if (this.diffSignSet()) {
-					//楼快图层没什么好移除的,setStyle可以直接改楼快图层样式，但使用自定义楼快样式会造成重绘
+					//楼快图层没什么好移除的,setStyle可以直接改楼快图层样式，但使用自定义楼快样式会造成重绘		
 					this.polygonInit()
 					this.markAdd()
 					this.threeDInit()
@@ -138,7 +142,7 @@ export default {
 			else if (price >= 30000 && price < 40000){return '#FF6666'}
 			else if (price >= 40000){return '#CC3333'} 
 		},
-		opticalPathSet () {		
+		opticalPathSet () {	
 			const bounds = this.map.getBounds();
 			const NorthEast = bounds.getNorthEast();
 			const SouthWest = bounds.getSouthWest();
@@ -148,8 +152,9 @@ export default {
 			this.path = cache
 			
 			this.opticalData = []
-			for (let i = 0; i < this.DataL.length; i++) {			
-				if (AMap.GeometryUtil.isPointInRing(this.DataL[i].center, this.path) || AMap.GeometryUtil.isRingInRing(this.DataL[i].path, this.path) || AMap.GeometryUtil.doesRingRingIntersect(this.DataL[i].path, this.path)) {	
+			for (let i = 0; i < this.DataL.length; i++) {
+				//console.log(AMap.GeometryUtil.isPointInRing(this.DataL[i].center, this.path))			
+				if (AMap.GeometryUtil.isRingInRing(this.DataL[i].path, this.path) || AMap.GeometryUtil.doesRingRingIntersect(this.DataL[i].path, this.path)) {	
 					this.opticalData.push(this.DataL[i])
 				}
 			}
@@ -206,14 +211,12 @@ export default {
 			this.buildingLayer.setStyle(this.options)
 		},
 		polygonInit () {
-			
 			let removeCache = []
 			this.gaodeOutline.eachOverlay((overlay, index, collections) => {
 				if (this.deleteData.hasOwnProperty(overlay.getExtData().id)) {
 					removeCache.push(overlay)
 				}
-			})	
-			
+			})				
 			this.gaodeOutline.removeOverlays(removeCache)//遍历删除单个多边形有问题，删不干净
 
 			let polygonCache = []	
