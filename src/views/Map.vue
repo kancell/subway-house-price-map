@@ -1,27 +1,27 @@
 <template>
 	<div class="map">
 		<MapInit v-bind:DataL="lianjiaData"/>
-		<a-select :default-value="cities[0]" style="width: 100px" v-model="provinceName" @focus="getProvince">
-			<a-select-option v-for="province in provinces" :key="province.name">
+		<select :default-value="cities[0]" style="width: 80px" v-model="provinceName" @focus="getProvince">
+			<option v-for="province in provinces" :key="province.name">
 				{{ province.name }}
-			</a-select-option>
-		</a-select>
-		<a-select :default-value="cities[0]" style="width: 100px" v-model="cityName" @focus="getCity">
-			<a-select-option v-for="city in cities" :key="city.name">
+			</option>
+		</select>
+		<select :default-value="cities[0]" style="width: 80px" v-model="cityName" @focus="getCity">
+			<option v-for="city in cities" :key="city.name">
 				{{ city.name }}
-			</a-select-option>
-		</a-select>
-		<a-select style="width: 100px" v-model="districtName" @focus="getDistrict">
-			<a-select-option v-for="district in districts" :key="district.name">
+			</option>
+		</select>
+		<select style="width: 80px" v-model="districtName" @focus="getDistrict">
+			<option v-for="district in districts" :key="district.name">
 				{{ district.name }}
-			</a-select-option>
-		</a-select>
-		<a-select  style="width: 190px"  v-model="streetName " @focus="getStreet">
-			<a-select-option v-for="street in streets" :key="street.name">
+			</option>
+		</select>
+		<select  style="width: 100px"  v-model="streetName " @focus="getStreet">
+			<option v-for="street in streets" :key="street.name">
 				{{ street.name }}
-			</a-select-option>
-		</a-select>
-		<a-button type="primary" shape="circle" icon="search" @click="onSearch"/>
+			</option>
+		</select>
+		<button @click="onSearch">查询</button>
 	</div>
 </template>
 
@@ -55,9 +55,7 @@ export default {
 	},
 	methods: {
 		dataInit (areaKey, areaValue) {
-
 			this.lianjiaData = []
-
 
 			for (let spec of data) {			
 				for (let specGaode of spec.gaodeInfo) {
@@ -90,9 +88,7 @@ export default {
 							this.lianjiaData.push(cachePath)
 							
 						} 
-					}
-
-		
+					}	
 				}
 			}
 			this.processed()		

@@ -1,7 +1,10 @@
 <template>
 	<div class="map-contain">
-		<span class="s">当前缩放层级： {{this.nowZoom}}</span>
-		<a-input-search placeholder="输入要查询的地点" style="width: 200px; margin-bottom:-40px; margin-left:10px; z-index: 20;" enter-button @search="onSearch" />		
+		<div class="insert">
+			<div>当前缩放层级： {{this.nowZoom}}</div>
+			<input v-model="searchValue" placeholder="输入要查询的地点" style="width: 150px;">
+			<button @click="onSearch(searchValue)">查询</button>
+		</div>
 		<div class="map" id="map"></div>
 	</div>
 </template>
@@ -10,9 +13,6 @@
 import AMap from "AMap"
 import { mapState } from 'vuex'
 import data from '@/assets/小区信息聚合.json'
-//还差，按视图小范围加载地图，降低性能压力
-//获取当前显示的范围，然后根据显示范围渲染标记
-//当前情况，新增标记有newAddData提供，删除判断由图层自身进行处理
 //显示范围较大时显示点聚合
 export default {
 	name: 'MapInit',
@@ -21,6 +21,7 @@ export default {
 	},
 	data() {
 		return {
+			searchValue: null,
 			timer: null,
 			nowZoom: 14,
 			buildingLayer: null, //小区楼梯色块图形
@@ -82,11 +83,11 @@ export default {
 		DataL: function() {
 			if (this.markLayer != null) {
 				this.markLayer.clear()
-				//标记图层移除信息标记
+				//数据改变时移除信息标记
 			}
 			if (this.gaodeOutline != undefined || this.gaodeOutline != null) {
 				this.gaodeOutline.clearOverlays()
-				//地图移除多边形
+				//数据改变时移除多边形
 			}
 			this.preOpticalData = []
 			this.opticalPathSet()
@@ -162,7 +163,6 @@ export default {
 		diffSignSet () {
 			//需要进行检查，检出当前视觉范围内的数据，被移出视觉范围的数据，新加入视觉范围的数据	
 			//opticalData: 当前视觉范围内的数据
-			//this.preOpticalData对比this.opticalData
 			this.newAddData = []
 			let diffHash = {}
 			this.preOpticalData.forEach(element => {
@@ -301,15 +301,13 @@ export default {
 <style scoped>
 .map-contain {
 	display: flex;
-	justify-content: center;
-	flex-direction: column;
-	height: 710px;
 }
 .map {
-	flex-grow:150;
-}
-span {
-	display: flex;
 	flex-grow:1;
+	height: 90vh;
+}
+.insert{	
+	position: fixed;
+	z-index: 20;
 }
 </style>
