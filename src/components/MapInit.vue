@@ -17,7 +17,9 @@ import data from '@/assets/小区信息聚合.json'
 export default {
 	name: 'MapInit',
 	props: {
-		DataL: Array
+		DataL: Array,
+		nowSelectAreaSpec: Array,
+		nowSelectAreaCenter: Object
 	},
 	data() {
 		return {
@@ -81,6 +83,8 @@ export default {
 	},
 	watch: {//this与父级上下文绑定，在vue的watch和生命周期函数中，谨慎使用箭头函数
 		DataL: function() {
+			console.log(this.nowSelectAreaSpec)
+			console.log(this.nowSelectAreaCenter)
 			if (this.markLayer != null) {
 				this.markLayer.clear()
 				//数据改变时移除信息标记

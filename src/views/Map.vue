@@ -1,22 +1,22 @@
 <template>
 	<div class="map">
-		<MapInit v-bind:DataL="lianjiaData"/>
-		<select :default-value="cities[0]" style="width: 80px" v-model="provinceName" @focus="getProvince">
+		<MapInit v-bind:DataL="lianjiaData" v-bind:nowSelectAreaSpec="nowSelectAreaSpec" v-bind:nowSelectAreaCenter="nowSelectAreaCenter"/>
+		<select :default-value="cities[0]" style="width: 80px" v-model="provinceName" @change="getCity">
 			<option v-for="province in provinces" :key="province.name">
 				{{ province.name }}
 			</option>
 		</select>
-		<select :default-value="cities[0]" style="width: 80px" v-model="cityName" @focus="getCity">
+		<select :default-value="cities[0]" style="width: 80px" v-model="cityName" @change="getDistrict">
 			<option v-for="city in cities" :key="city.name">
 				{{ city.name }}
 			</option>
 		</select>
-		<select style="width: 80px" v-model="districtName" @focus="getDistrict">
+		<select style="width: 80px" v-model="districtName" @change="getStreet">
 			<option v-for="district in districts" :key="district.name">
 				{{ district.name }}
 			</option>
 		</select>
-		<select  style="width: 100px"  v-model="streetName " @focus="getStreet">
+		<select  style="width: 100px"  v-model="streetName">
 			<option v-for="street in streets" :key="street.name">
 				{{ street.name }}
 			</option>
@@ -34,6 +34,8 @@ export default {
 	data() {
 		return {
 			lianjiaData: [],
+			nowSelectAreaSpec: [],
+			nowSelectAreaCenter: {},
 			provinceData: [],
 			provinces: [],
 			cities: [],
@@ -49,6 +51,7 @@ export default {
 		//this.dataInit('detailArea', '育才花桥')
 		//this.dataInit('area', '江岸')
 		this.initSearch()
+		this.getProvince()
 	},
 	computed: {
 
@@ -112,10 +115,10 @@ export default {
 		initSearch () {
 			let opts = {
 				subdistrict: 1,   //返回下一级行政区
-				showbiz:true  //最后一级返回街道信息
+				showbiz:true,
+				extensions: 'all'
 			};
-			this.district = new AMap.DistrictSearch();//注意：需要使用插件同步下发功能才能这样直接使用
-			//this.district.setExtensions('all');
+			this.district = new AMap.DistrictSearch(opts);//注意：需要使用插件同步下发功能才能这样直接使用
 		}, 
 		getProvince() {
 			this.district.search('中国', (status, result) => {
@@ -145,6 +148,7 @@ export default {
 			if(this.cityName == null) {
 				return
 			}
+			
 			this.district.search(this.cityName, (status, result) => {
 				if(status == 'complete'){ //			
 					this.districts = result.districtList[0].districtList
@@ -159,6 +163,8 @@ export default {
 			}
 			this.district.search(this.districtName, (status, result) => {
 				if(status == 'complete') {
+					this.nowSelectAreaSpec = result.districtList[0].boundaries
+					this.nowSelectAreaCenter = result.districtList[0].center
 					this.streets = result.districtList[0].districtList
 					this.streets.push({name: '----'})
 				} 
