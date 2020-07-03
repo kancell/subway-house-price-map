@@ -30,6 +30,7 @@ export default {
 			options: null, //楼快
 			map: null, //地图
 			gaodeOutline: null, //范围多边形
+			districtPolygon: null,
 			markLayer: null,
 			opticalData: null,
 			preOpticalData: []
@@ -57,10 +58,11 @@ export default {
 			this.map.add(this.gaodeOutline);
 			this.polygonInit()
 
+
 			this.markLayer = new AMap.LabelsLayer({
 				zooms: [15, 20],
 				zIndex: 1000,
-				allowCollision: true,
+				//allowCollision: true,
 				collision: true,
  				animation: false,  
 			});
@@ -71,7 +73,7 @@ export default {
 			this.map.addLayer(this.buildingLayer)
 
 			//this.location()
-		})		
+		})
 
 		this.map.on(['zoomchange', 'dragend'], () => {//,'dragstart'
 			this.nowZoom = this.map.getZoom()
@@ -83,34 +85,25 @@ export default {
 	},
 	watch: {//this与父级上下文绑定，在vue的watch和生命周期函数中，谨慎使用箭头函数
 		DataL: function() {
-			console.log(this.nowSelectAreaSpec)
-			console.log(this.nowSelectAreaCenter)
-			if (this.markLayer != null) {
-				this.markLayer.clear()
-				//数据改变时移除信息标记
-			}
-			if (this.gaodeOutline != undefined || this.gaodeOutline != null) {
-				this.gaodeOutline.clearOverlays()
-				//数据改变时移除多边形
-			}
+			this.districtPolygonInit(this.nowSelectAreaSpec[0])
+			this.markLayer != null ? this.markLayer.clear() : ''//数据改变时移除信息标记		
+			this.gaodeOutline != null ? this.gaodeOutline.clearOverlays() : ''//数据改变时移除多边形
 			this.preOpticalData = []
-			this.opticalPathSet()
-			this.diffSignSet()
-
+			this.mapReSet()
 			console.log('数据改变,地图重新加载')
 
-			this.polygonInit()					
-			this.markAdd()
-			this.threeDInit()
+
 			//this.location()
 		}
 	},
 	methods: {
 		mapReSet() {
-			if (this.nowZoom < 14) {
+			if (this.nowZoom < 15) {
 				this.gaodeOutline == null ? '' : this.gaodeOutline.hide()
+				this.districtPolygon == null ? '' : this.districtPolygon.show()
 			}
-			else if(this.nowZoom >= 14) {
+			else if(this.nowZoom >= 15) {
+				this.districtPolygon == null ? '' : this.districtPolygon.hide()
 				this.gaodeOutline == null ? '' : this.gaodeOutline.show()
 				this.opticalPathSet()
 				if (this.diffSignSet()) {
@@ -147,7 +140,8 @@ export default {
 			else if (price >= 30000 && price < 40000){return '#FF6666'}
 			else if (price >= 40000){return '#CC3333'} 
 		},
-		opticalPathSet () {	
+		opticalPathSet () {
+			console.time('opticalPathSet')
 			const bounds = this.map.getBounds();
 			const NorthEast = bounds.getNorthEast();
 			const SouthWest = bounds.getSouthWest();
@@ -163,8 +157,10 @@ export default {
 					this.opticalData.push(this.DataL[i])
 				}
 			}
+			console.timeEnd('opticalPathSet')
 		},
 		diffSignSet () {
+			console.time('diffSignSet')
 			//需要进行检查，检出当前视觉范围内的数据，被移出视觉范围的数据，新加入视觉范围的数据	
 			//opticalData: 当前视觉范围内的数据
 			this.newAddData = []
@@ -194,6 +190,7 @@ export default {
 				diffSign = false
 			}
 			this.preOpticalData = this.opticalData
+			console.timeEnd('diffSignSet')
 			return diffSign
 		},
 		threeDInit() {	
@@ -215,6 +212,7 @@ export default {
 			this.buildingLayer.setStyle(this.options)
 		},
 		polygonInit () {
+			console.time('polygonInit')
 			let removeCache = []
 			this.gaodeOutline.eachOverlay((overlay, index, collections) => {
 				if (this.deleteData.hasOwnProperty(overlay.getExtData().id)) {
@@ -228,9 +226,10 @@ export default {
 				let polygon = new AMap.Polygon({
 					strokeColor: this.colorSet(this.newAddData[i].price), // 线条颜色
 					fillColor: this.colorSet(this.newAddData[i].price), // 多边形填充颜色
+					fillOpacity: 0.3,
 					path:this.newAddData[i].path,
 					extData: {id: this.newAddData[i].id}
-				})	
+				})//可以试试Polyline
 				polygonCache.push(polygon)							
 			}			
 			this.gaodeOutline.addOverlays(polygonCache)
@@ -238,8 +237,20 @@ export default {
 				strokeWeight:1,
 				strokeColor: "#000"
 			});
+			console.timeEnd('polygonInit')
+		},
+		districtPolygonInit (path) {
+			this.districtPolygon != null ? this.map.remove(this.districtPolygon) : ''
+			this.districtPolygon = new AMap.Polygon({
+				path: path,  
+				fillColor: '#fff', // 多边形填充颜色
+				borderWeight: 1, // 线条宽度，默认为 1
+				strokeColor: '#000' // 线条颜色
+			});
+			this.map.add(this.districtPolygon);
 		},
 		markAdd () {
+			console.time('markAdd')
 			//这就是海量标记的性能吗，真是有够可笑的呢
 			let removeCache = []
 			this.markLayer.getAllOverlays().forEach((marker, index, collections) => {
@@ -252,29 +263,43 @@ export default {
 			let infoMarkers = []
 			for (let i = 0; i < this.newAddData.length; i++) {
 				let labelMarker = new AMap.LabelMarker({
-					name: this.newAddData[i].id,
+					name: this.newAddData[i].name,
 					position: this.newAddData[i].center,
 					zooms: [14, 20],
 					opacity: 1,
 					zIndex: 16,
 					text: {
-						content: this.newAddData[i].name + '  均价：' + this.newAddData[i].price,
-						direction: 'right',
-						offset: [-20, -5],
+						content: this.newAddData[i].name +":"+ this.newAddData[i].price,
+						direction: 'top',
 						style: {
-							fontSize: 12,
-							fillColor: '#22886f',
-							strokeColor: '#fff',
-							strokeWidth: 2,
-							fold: true,
+							fontSize: 13,
+							fillColor: '#fff',
 							padding: '2, 5',
+							backgroundColor: '#22884f'
 						}
 					},
 					extData: {id: this.newAddData[i].id}
-				});
+				})
+				labelMarker.on('mouseover', ()=> {
+					labelMarker.setText({
+						style: {
+							backgroundColor: 'red'
+						}
+					})
+				})
+				labelMarker.on('mouseout', ()=> {
+					labelMarker.setText({
+						style: {
+							backgroundColor: '#22884f'}
+					})
+				})
+				labelMarker.on('click', ()=> {
+					console.log('弹出' + labelMarker.getExtData().id + '的详情叠层')
+				})
 				infoMarkers.push(labelMarker)	
 			}
 			this.markLayer.add(infoMarkers)
+			console.timeEnd('markAdd')
 		},
 		location() {
 			AMap.plugin('AMap.Geolocation', () => {
