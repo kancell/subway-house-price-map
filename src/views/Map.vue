@@ -1,23 +1,23 @@
 <template>
 	<div class="map">
 		<MapInit v-bind:DataL="lianjiaData" v-bind:nowSelectAreaSpec="nowSelectAreaSpec" v-bind:nowSelectAreaCenter="nowSelectAreaCenter"/>
-		<select :default-value="cities[0]" style="width: 80px" v-model="provinceName" @change="getCity">
-			<option v-for="province in provinces" :key="province.name">
-				{{ province.name }}
+		<select :default-value="cities[0]" style="width: 80px" v-model="provinceAdCode" @change="getCity(provinceAdCode)">
+			<option v-for="province in provinces" :key="province.adcode" :label="province.name">
+				{{ province.adcode }}
 			</option>
 		</select>
-		<select :default-value="cities[0]" style="width: 80px" v-model="cityName" @change="getDistrict">
-			<option v-for="city in cities" :key="city.name">
-				{{ city.name }}
+		<select :default-value="cities[0]" style="width: 80px" v-model="cityAdCode" @change="getDistrict">
+			<option v-for="city in cities" :key="city.adcode" :label="city.name">
+				{{ city.adcode }}
 			</option>
 		</select>
-		<select style="width: 80px" v-model="districtName" @change="getStreet">
-			<option v-for="district in districts" :key="district.name">
-				{{ district.name }}
+		<select style="width: 80px" v-model="districtAdCode" @change="getStreet">
+			<option v-for="district in districts" :key="district.adcode" :label="district.name">
+				{{ district.adcode }}
 			</option>
 		</select>
-		<select  style="width: 100px"  v-model="streetName">
-			<option v-for="street in streets" :key="street.name">
+		<select  style="width: 100px"  v-model="streetAdCode">
+			<option v-for="street in streets" :key="street.name" :label="street.name">
 				{{ street.name }}
 			</option>
 		</select>
@@ -41,10 +41,10 @@ export default {
 			cities: [],
 			districts :[],
 			streets: [],
-			provinceName: null,
-			cityName: null,
-			districtName: null,
-			streetName: null
+			provinceAdCode: null,
+			cityAdCode: null,
+			districtAdCode: null,
+			streetAdCode: null
 		}
 	},
 	mounted () {
@@ -125,43 +125,44 @@ export default {
 				if(status=='complete'){
 					this.provinces = result.districtList[0].districtList
 					this.provinces.push({name: '----'})
-					this.cityName = null
-					this.districtName = null
-					this.streetName = null
+					this.cityAdCode = null
+					this.districtAdCode = null
+					this.streetAdCode = null
 				}
 			});
 		},
 		getCity() {
-			if(this.provinceName == null) {
+			if(this.provinceAdCode == null) {
 				return
 			}
-			this.district.search(this.provinceName, (status, result) => {
+			this.district.search(this.provinceAdCode, (status, result) => {
 				if(status=='complete'){
 					this.cities = result.districtList[0].districtList
 					this.cities.push({name: '----'})
-					this.districtName = null
-					this.streetName = null
+					this.districtAdCode = null
+					this.streetAdCode = null
 				}
 			});
 		},
 		getDistrict () {
-			if(this.cityName == null) {
+			if(this.cityAdCode == null) {
 				return
 			}
 			
-			this.district.search(this.cityName, (status, result) => {
+			this.district.search(this.cityAdCode, (status, result) => {
 				if(status == 'complete'){ //			
 					this.districts = result.districtList[0].districtList
 					this.districts.push({name: '----'})
-					this.streetName = null
+					this.streetAdCode = null
 				}			
 			});
 		},
 		getStreet () {
-			if(this.districtName == null) {
+			if(this.districtAdCode == null) {
 				return
 			}
-			this.district.search(this.districtName, (status, result) => {
+			this.district.search(this.districtAdCode, (status, result) => {
+				console.log(result)
 				if(status == 'complete') {
 					this.nowSelectAreaSpec = result.districtList[0].boundaries
 					this.nowSelectAreaCenter = result.districtList[0].center
@@ -172,11 +173,11 @@ export default {
 		},
 		onSearch() {
 			
-			 if (this.streetName != null && this.streetName != '----') {
-				this.dataInit('detailArea', this.streetName)
-			} else if (this.districtName != null && this.districtName!= '----') {
-				this.dataInit('area', this.districtName.replace('区',''))
-			} else if (this.cityName != null && this.cityName!= '----' && this.cityName =='武汉市') {
+			 if (this.streetAdCode != null && this.streetAdCode != '----') {
+				this.dataInit('detailArea', this.streetAdCode)
+			} else if (this.districtAdCode != null && this.districtAdCode!= '----') {
+				this.dataInit('area', this.districtAdCode.replace('区',''))
+			} else if (this.cityAdCode != null && this.cityAdCode!= '----' && this.cityAdCode =='武汉市') {
 				this.dataInit('city', '武汉')
 			} else {
 				console.log("数据不足无可奉告")
