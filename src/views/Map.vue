@@ -1,24 +1,24 @@
 <template>
 	<div class="map">
 		<MapInit v-bind:DataL="lianjiaData" v-bind:nowSelectAreaSpec="nowSelectAreaSpec" v-bind:nowSelectAreaCenter="nowSelectAreaCenter"/>
-		<select :default-value="cities[0]" style="width: 80px" v-model="provinceAdCode" @change="getCity(provinceAdCode)">
+		<select :default-value="cities[0]" style="width: 80px" v-model="provinceInfo" @change="getCity">
 			<option v-for="province in provinces" :key="province.adcode" :label="province.name">
-				{{ province.adcode }}
+				{{ province }}
 			</option>
 		</select>
-		<select :default-value="cities[0]" style="width: 80px" v-model="cityAdCode" @change="getDistrict">
+		<select :default-value="cities[0]" style="width: 80px" v-model="cityInfo" @change="getDistrict">
 			<option v-for="city in cities" :key="city.adcode" :label="city.name">
-				{{ city.adcode }}
+				{{ city }}
 			</option>
 		</select>
-		<select style="width: 80px" v-model="districtAdCode" @change="getStreet">
+		<select style="width: 80px" v-model="districtInfo" @change="getStreetAndDistrictSpec">
 			<option v-for="district in districts" :key="district.adcode" :label="district.name">
-				{{ district.adcode }}
+				{{ district }}
 			</option>
 		</select>
-		<select  style="width: 100px"  v-model="streetAdCode">
+		<select  style="width: 100px"  v-model="streetInfo">
 			<option v-for="street in streets" :key="street.name" :label="street.name">
-				{{ street.name }}
+				{{ street }}
 			</option>
 		</select>
 		<button @click="onSearch">查询</button>
@@ -36,15 +36,14 @@ export default {
 			lianjiaData: [],
 			nowSelectAreaSpec: [],
 			nowSelectAreaCenter: {},
-			provinceData: [],
 			provinces: [],
 			cities: [],
 			districts :[],
 			streets: [],
-			provinceAdCode: null,
-			cityAdCode: null,
-			districtAdCode: null,
-			streetAdCode: null
+			provinceInfo: null,
+			cityInfo: null,
+			districtInfo: null,
+			streetInfo: null
 		}
 	},
 	mounted () {
@@ -58,8 +57,7 @@ export default {
 	},
 	methods: {
 		dataInit (areaKey, areaValue) {
-			this.lianjiaData = []
-
+			this.lianjiaData = []            
 			for (let spec of data) {			
 				for (let specGaode of spec.gaodeInfo) {
 					if (specGaode.hasOwnProperty('spec') && specGaode.spec.hasOwnProperty('shape')) {
@@ -125,46 +123,52 @@ export default {
 				if(status=='complete'){
 					this.provinces = result.districtList[0].districtList
 					this.provinces.push({name: '----'})
-					this.cityAdCode = null
-					this.districtAdCode = null
-					this.streetAdCode = null
+					this.cityInfo = null
+					this.districtInfo = null
+					this.streetInfo = null
 				}
 			});
 		},
 		getCity() {
-			if(this.provinceAdCode == null) {
+			if(this.provinceInfo == null) {
 				return
 			}
-			this.district.search(this.provinceAdCode, (status, result) => {
+
+			this.district.search(JSON.parse(this.provinceInfo).adcode, (status, result) => {
 				if(status=='complete'){
 					this.cities = result.districtList[0].districtList
 					this.cities.push({name: '----'})
-					this.districtAdCode = null
-					this.streetAdCode = null
+					this.districtInfo = null
+					this.streetInfo = null
 				}
 			});
 		},
 		getDistrict () {
-			if(this.cityAdCode == null) {
+			if(this.cityInfo == null) {
 				return
 			}
 			
-			this.district.search(this.cityAdCode, (status, result) => {
+			this.district.search(JSON.parse(this.cityInfo).adcode, (status, result) => {
 				if(status == 'complete'){ //			
 					this.districts = result.districtList[0].districtList
 					this.districts.push({name: '----'})
-					this.streetAdCode = null
+					this.streetInfo = null
 				}			
 			});
 		},
-		getStreet () {
-			if(this.districtAdCode == null) {
+		getStreetAndDistrictSpec () {
+			if(this.districtInfo == null) {
 				return
 			}
-			this.district.search(this.districtAdCode, (status, result) => {
-				console.log(result)
+			if (JSON.parse(this.districtInfo).name == '----') {
+				this.nowSelectAreaSpec = []
+				this.getDistrict()
+				return
+			}
+			this.district.search(JSON.parse(this.districtInfo).adcode, (status, result) => {
 				if(status == 'complete') {
 					this.nowSelectAreaSpec = result.districtList[0].boundaries
+					console.log(result)
 					this.nowSelectAreaCenter = result.districtList[0].center
 					this.streets = result.districtList[0].districtList
 					this.streets.push({name: '----'})
@@ -172,18 +176,17 @@ export default {
 			})
 		},
 		onSearch() {
-			
-			 if (this.streetAdCode != null && this.streetAdCode != '----') {
-				this.dataInit('detailArea', this.streetAdCode)
-			} else if (this.districtAdCode != null && this.districtAdCode!= '----') {
-				this.dataInit('area', this.districtAdCode.replace('区',''))
-			} else if (this.cityAdCode != null && this.cityAdCode!= '----' && this.cityAdCode =='武汉市') {
+			if (this.streetInfo != null && JSON.parse(this.streetInfo).name != null && JSON.parse(this.streetInfo).name != '----') {
+				this.dataInit('detailArea', this.streetInfo)
+			} else 
+			if (this.districtInfo != null && JSON.parse(this.districtInfo).name != null && JSON.parse(this.districtInfo).name != '----') {
+				this.dataInit('area', JSON.parse(this.districtInfo).name.replace('区',''))
+			} else 
+			if (this.cityInfo!= null && JSON.parse(this.cityInfo).name != null && JSON.parse(this.cityInfo).name != '----' && JSON.parse(this.cityInfo).name =='武汉市') {
 				this.dataInit('city', '武汉')
 			} else {
 				console.log("数据不足无可奉告")
 			}
-			//
-			//this.dataInit('area', '洪山区')
 		},
 	},
 	components: {

@@ -29,7 +29,7 @@ export default {
 			buildingLayer: null, //小区楼梯色块图形
 			options: null, //楼快
 			map: null, //地图
-			gaodeOutline: null, //范围多边形
+			estatePolygon: null, //范围多边形
 			districtPolygon: null,
 			markLayer: null,
 			opticalData: null,
@@ -54,10 +54,13 @@ export default {
 			this.opticalPathSet()
 			this.diffSignSet()
 			
-			this.gaodeOutline = new AMap.OverlayGroup();
-			this.map.add(this.gaodeOutline);
-			this.polygonInit()
+			this.estatePolygon = new AMap.OverlayGroup()
+			this.map.add(this.estatePolygon)
+			this.estatePolygonInit()
 
+			this.districtPolygon = new AMap.OverlayGroup()
+			this.map.add(this.districtPolygon)
+			this.districtPolygonInit()
 
 			this.markLayer = new AMap.LabelsLayer({
 				zooms: [15, 20],
@@ -66,7 +69,7 @@ export default {
 				collision: true,
  				animation: false,  
 			});
-			this.map.addLayer(this.markLayer);
+			this.map.addLayer(this.markLayer)
 			this.markAdd()
 
 			this.buildingLayer = new AMap.Buildings({zIndex:17, zooms:[17,20]});
@@ -85,30 +88,32 @@ export default {
 	},
 	watch: {//this与父级上下文绑定，在vue的watch和生命周期函数中，谨慎使用箭头函数
 		DataL: function() {
-			this.districtPolygonInit(this.nowSelectAreaSpec[0])
-			this.markLayer != null ? this.markLayer.clear() : ''//数据改变时移除信息标记		
-			this.gaodeOutline != null ? this.gaodeOutline.clearOverlays() : ''//数据改变时移除多边形
+			this.markLayer != null ? this.markLayer.clear() : ''//数据改变时移除信息标记
+
+			this.districtPolygon != null ? this.districtPolygon.clearOverlays() : ''//
+			this.districtPolygonInit()
+
+			this.estatePolygon != null ? this.estatePolygon.clearOverlays() : ''//数据改变时移除多边形
+
 			this.preOpticalData = []
 			this.mapReSet()
 			console.log('数据改变,地图重新加载')
-
-
-			//this.location()
 		}
 	},
 	methods: {
 		mapReSet() {
 			if (this.nowZoom < 15) {
-				this.gaodeOutline == null ? '' : this.gaodeOutline.hide()
 				this.districtPolygon == null ? '' : this.districtPolygon.show()
+				this.estatePolygon == null ? '' : this.estatePolygon.hide()		
 			}
 			else if(this.nowZoom >= 15) {
 				this.districtPolygon == null ? '' : this.districtPolygon.hide()
-				this.gaodeOutline == null ? '' : this.gaodeOutline.show()
+				this.estatePolygon == null ? '' : this.estatePolygon.show()
 				this.opticalPathSet()
 				if (this.diffSignSet()) {
-					//楼快图层没什么好移除的,setStyle可以直接改楼快图层样式，但使用自定义楼快样式会造成重绘		
-					this.polygonInit()
+					//楼快图层没什么好移除的,setStyle可以直接改楼快图层样式，但使用自定义楼快样式会造成重绘
+					//信息标记与小区轮廓需要实时更新视图范围内数据，所以放进mapset
+					this.estatePolygonInit()
 					this.markAdd()
 					this.threeDInit()
 				}
@@ -211,15 +216,16 @@ export default {
 			}
 			this.buildingLayer.setStyle(this.options)
 		},
-		polygonInit () {
-			console.time('polygonInit')
+		estatePolygonInit () {
+			console.time('estatePolygonInit')
+			
 			let removeCache = []
-			this.gaodeOutline.eachOverlay((overlay, index, collections) => {
+			this.estatePolygon.eachOverlay((overlay, index, collections) => {
 				if (this.deleteData.hasOwnProperty(overlay.getExtData().id)) {
 					removeCache.push(overlay)
 				}
 			})				
-			this.gaodeOutline.removeOverlays(removeCache)//遍历删除单个多边形有问题，删不干净
+			this.estatePolygon.removeOverlays(removeCache)//遍历删除单个多边形有问题，删不干净
 
 			let polygonCache = []	
 			for (let i = 0; i < this.newAddData.length; i++) {
@@ -232,22 +238,29 @@ export default {
 				})//可以试试Polyline
 				polygonCache.push(polygon)							
 			}			
-			this.gaodeOutline.addOverlays(polygonCache)
-			this.gaodeOutline.setOptions({
+			this.estatePolygon.addOverlays(polygonCache)
+			this.estatePolygon.setOptions({
 				strokeWeight:1,
 				strokeColor: "#000"
 			});
-			console.timeEnd('polygonInit')
+
+			console.timeEnd('estatePolygonInit')
 		},
-		districtPolygonInit (path) {
-			this.districtPolygon != null ? this.map.remove(this.districtPolygon) : ''
-			this.districtPolygon = new AMap.Polygon({
-				path: path,  
-				fillColor: '#fff', // 多边形填充颜色
-				borderWeight: 1, // 线条宽度，默认为 1
-				strokeColor: '#000' // 线条颜色
-			});
-			this.map.add(this.districtPolygon);
+		districtPolygonInit () {			
+			if(this.nowSelectAreaSpec.length == 0) return
+			let polygonCache = []
+			console.log(this.nowSelectAreaSpec.length)
+			for (let i = 0; i < this.nowSelectAreaSpec.length; i++) {
+				let polygon = new AMap.Polygon({
+					path: this.nowSelectAreaSpec[i],
+				})//可以试试Polyline
+				polygonCache.push(polygon)							
+			}			
+			this.districtPolygon.addOverlays(polygonCache)
+			this.districtPolygon.setOptions({
+				strokeWeight:1,
+				strokeColor: "#000"
+			});		
 		},
 		markAdd () {
 			console.time('markAdd')
