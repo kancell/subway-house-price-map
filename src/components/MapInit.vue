@@ -56,11 +56,11 @@ export default {
 			
 			this.estatePolygon = new AMap.OverlayGroup()
 			this.map.add(this.estatePolygon)
-			this.estatePolygonInit()
+			this.estatePolygonSet()
 
 			this.districtPolygon = new AMap.OverlayGroup()
 			this.map.add(this.districtPolygon)
-			this.districtPolygonInit()
+			this.districtPolygonSet()
 
 			this.markLayer = new AMap.LabelsLayer({
 				zooms: [15, 20],
@@ -70,7 +70,7 @@ export default {
  				animation: false,  
 			});
 			this.map.addLayer(this.markLayer)
-			this.markAdd()
+			this.estateMarkSet()
 
 			this.buildingLayer = new AMap.Buildings({zIndex:17, zooms:[17,20]});
 			this.map.addLayer(this.buildingLayer)
@@ -90,10 +90,10 @@ export default {
 		DataL: function() {
 			this.markLayer != null ? this.markLayer.clear() : ''//数据改变时移除信息标记
 
-			this.districtPolygon != null ? this.districtPolygon.clearOverlays() : ''//
-			this.districtPolygonInit()
+			this.districtPolygon != null ? this.districtPolygon.clearOverlays() : ''//数据改变时移除行政区多边形
+			this.districtPolygonSet()
 
-			this.estatePolygon != null ? this.estatePolygon.clearOverlays() : ''//数据改变时移除多边形
+			this.estatePolygon != null ? this.estatePolygon.clearOverlays() : ''//数据改变时移除小区多边形
 
 			this.preOpticalData = []
 			this.mapReSet()
@@ -113,9 +113,9 @@ export default {
 				if (this.diffSignSet()) {
 					//楼快图层没什么好移除的,setStyle可以直接改楼快图层样式，但使用自定义楼快样式会造成重绘
 					//信息标记与小区轮廓需要实时更新视图范围内数据，所以放进mapset
-					this.estatePolygonInit()
-					this.markAdd()
-					this.threeDInit()
+					this.estatePolygonSet()
+					this.estateMarkSet()
+					this.threeDSet()
 				}
 			}
 		},
@@ -154,10 +154,9 @@ export default {
 			const NorthWest = [SouthWest.lng, NorthEast.lat];
 			let cache = [[NorthEast.lng, NorthEast.lat], SouthEast, [SouthWest.lng, SouthWest.lat], NorthWest]
 			this.path = cache
-			
+
 			this.opticalData = []
-			for (let i = 0; i < this.DataL.length; i++) {
-				//console.log(AMap.GeometryUtil.isPointInRing(this.DataL[i].center, this.path))			
+			for (let i = 0; i < this.DataL.length; i++) {		
 				if (AMap.GeometryUtil.isRingInRing(this.DataL[i].path, this.path) || AMap.GeometryUtil.doesRingRingIntersect(this.DataL[i].path, this.path)) {	
 					this.opticalData.push(this.DataL[i])
 				}
@@ -198,7 +197,7 @@ export default {
 			console.timeEnd('diffSignSet')
 			return diffSign
 		},
-		threeDInit() {	
+		threeDSet() {	
 			return//重绘实在成问题，体验太差 ,而且无法正常清除
 			this.options = {
 				hideWithoutStyle: true,//是否隐藏其他的默认楼块
@@ -216,8 +215,8 @@ export default {
 			}
 			this.buildingLayer.setStyle(this.options)
 		},
-		estatePolygonInit () {
-			console.time('estatePolygonInit')
+		estatePolygonSet () {
+			console.time('estatePolygonSet')
 			
 			let removeCache = []
 			this.estatePolygon.eachOverlay((overlay, index, collections) => {
@@ -244,12 +243,12 @@ export default {
 				strokeColor: "#000"
 			});
 
-			console.timeEnd('estatePolygonInit')
+			console.timeEnd('estatePolygonSet')
 		},
-		districtPolygonInit () {			
+		districtPolygonSet () {			
 			if(this.nowSelectAreaSpec.length == 0) return
 			let polygonCache = []
-			console.log(this.nowSelectAreaSpec.length)
+
 			for (let i = 0; i < this.nowSelectAreaSpec.length; i++) {
 				let polygon = new AMap.Polygon({
 					path: this.nowSelectAreaSpec[i],
@@ -262,8 +261,8 @@ export default {
 				strokeColor: "#000"
 			});		
 		},
-		markAdd () {
-			console.time('markAdd')
+		estateMarkSet () {
+			console.time('estateMarkSet')
 			//这就是海量标记的性能吗，真是有够可笑的呢
 			let removeCache = []
 			this.markLayer.getAllOverlays().forEach((marker, index, collections) => {
@@ -312,7 +311,7 @@ export default {
 				infoMarkers.push(labelMarker)	
 			}
 			this.markLayer.add(infoMarkers)
-			console.timeEnd('markAdd')
+			console.timeEnd('estateMarkSet')
 		},
 		location() {
 			AMap.plugin('AMap.Geolocation', () => {

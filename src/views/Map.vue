@@ -149,7 +149,8 @@ export default {
 			}
 			
 			this.district.search(JSON.parse(this.cityInfo).adcode, (status, result) => {
-				if(status == 'complete'){ //			
+				if(status == 'complete'){ //
+					this.nowSelectAreaSpec = result.districtList[0].boundaries
 					this.districts = result.districtList[0].districtList
 					this.districts.push({name: '----'})
 					this.streetInfo = null
@@ -168,7 +169,6 @@ export default {
 			this.district.search(JSON.parse(this.districtInfo).adcode, (status, result) => {
 				if(status == 'complete') {
 					this.nowSelectAreaSpec = result.districtList[0].boundaries
-					console.log(result)
 					this.nowSelectAreaCenter = result.districtList[0].center
 					this.streets = result.districtList[0].districtList
 					this.streets.push({name: '----'})
