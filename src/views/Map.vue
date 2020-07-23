@@ -168,6 +168,7 @@ export default {
 			}
 			this.district.search(JSON.parse(this.districtInfo).adcode, (status, result) => {
 				if(status == 'complete') {
+					console.log(result)
 					this.nowSelectAreaSpec = result.districtList[0].boundaries
 					this.nowSelectAreaCenter = result.districtList[0].center
 					this.streets = result.districtList[0].districtList

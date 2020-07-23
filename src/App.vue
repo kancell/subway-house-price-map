@@ -1,6 +1,6 @@
 <template>
 	<div id="app">
-		<div id="route">
+		<div id="route" v-show="false">
 			<router-link to="/">Map</router-link>
 			<router-link to="/chart">Chart</router-link>
 			<router-link to="/about">About</router-link>

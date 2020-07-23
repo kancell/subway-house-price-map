@@ -50,7 +50,10 @@ export default {
 			showIndoorMap: false,
 			layers:[AMap.createDefaultLayer()]//spec
 		});	
+
+
 		this.map.on('complete', ()=> {
+			
 			this.opticalPathSet()
 			this.diffSignSet()
 			
@@ -77,8 +80,9 @@ export default {
 
 			//this.location()
 		})
-
-		this.map.on(['zoomchange', 'dragend'], () => {//,'dragstart'
+		this.mapInitLoCation()
+		this.map.on(['zoomstart', 'dragend'], () => {//,'dragstart'
+			
 			this.nowZoom = this.map.getZoom()
 			if (this.timer != null) {
 				clearTimeout(this.timer)
@@ -101,7 +105,46 @@ export default {
 		}
 	},
 	methods: {
+		showScreenbund() {
+			const bounds = this.map.getBounds();
+			const NorthEast = bounds.getNorthEast();
+			const SouthWest = bounds.getSouthWest();
+			const SouthEast = [NorthEast.lng, SouthWest.lat];
+			const NorthWest = [SouthWest.lng, NorthEast.lat];
+			let cache = [[NorthEast.lng, NorthEast.lat], SouthEast, [SouthWest.lng, SouthWest.lat], NorthWest]
+			return cache
+		},
+		mapInitLoCation() {
+			let citysearch = new AMap.CitySearch();
+			let opts = {
+				subdistrict: 1,   //返回下一级行政区
+				showbiz:true,
+				extensions: 'all'
+			};
+
+			citysearch.getLocalCity((status, result) => {
+				if (status === 'complete' && result.info === 'OK') {
+					if (result && result.city && result.bounds) {		
+						let citybounds = result.bounds
+						//this.map.setBounds(citybounds)
+
+						this.district = new AMap.DistrictSearch(opts);
+						this.district.search(result.adcode, (status, result) => {
+							if(status == 'complete'){ //
+							this.tempNowShow =  result.districtList[0].districtList
+								//console.log(AMap.GeometryUtil.isRingInRing(this.DataL[i].path, this.path))
+							}			
+						})
+					}
+				} else {
+					
+				}
+			});
+		},
 		mapReSet() {
+			this.tempNowShow.forEach(ele => {
+				console.log(ele.name, AMap.GeometryUtil.isPointInRing(ele.center, this.showScreenbund()))
+			});
 			if (this.nowZoom < 15) {
 				this.districtPolygon == null ? '' : this.districtPolygon.show()
 				this.estatePolygon == null ? '' : this.estatePolygon.hide()		
@@ -147,13 +190,7 @@ export default {
 		},
 		opticalPathSet () {
 			console.time('opticalPathSet')
-			const bounds = this.map.getBounds();
-			const NorthEast = bounds.getNorthEast();
-			const SouthWest = bounds.getSouthWest();
-			const SouthEast = [NorthEast.lng, SouthWest.lat];
-			const NorthWest = [SouthWest.lng, NorthEast.lat];
-			let cache = [[NorthEast.lng, NorthEast.lat], SouthEast, [SouthWest.lng, SouthWest.lat], NorthWest]
-			this.path = cache
+			this.path = this.showScreenbund()
 
 			this.opticalData = []
 			for (let i = 0; i < this.DataL.length; i++) {		
@@ -287,7 +324,7 @@ export default {
 							fontSize: 13,
 							fillColor: '#fff',
 							padding: '2, 5',
-							backgroundColor: '#22884f'
+							backgroundColor: '#22884f',
 						}
 					},
 					extData: {id: this.newAddData[i].id}
@@ -345,7 +382,7 @@ export default {
 }
 .map {
 	flex-grow:1;
-	height: 90vh;
+	height: 100vh;
 }
 .insert{	
 	position: fixed;
